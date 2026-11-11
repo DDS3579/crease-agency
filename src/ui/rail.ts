@@ -1,4 +1,5 @@
 import { $, $$, debounce } from '../lib/dom';
+import { copy } from '../content/demo/copy';
 
 export interface Rail {
   update(P: number, stage: number): void;
@@ -7,29 +8,50 @@ export interface Rail {
 }
 
 export function initRail(): Rail {
-  const fill = $('[data-rail-fill]') as HTMLElement | null;
+  const fill = $<HTMLElement>('[data-rail-fill]');
   const ticks = $$('[data-tick]');
   const live = $('[data-rail-live]');
-  const labels = ['Start', 'Strategy', 'Design', 'Build', 'Launch'];
+
+  const labels = copy.rail.ticks;
+  const stageCount = copy.chapters.length;
+
   let current = -1;
+  let lastFill = -1;
+  let journeyActive: boolean | null = null;
+  let launch: boolean | null = null;
+
   const announce = debounce((stage: number) => {
-    if (live) live.textContent = `Stage ${stage} of 4: ${labels[stage] ?? ''}`;
+    if (!live) return;
+    const label = labels[stage] ?? '';
+    // Colour is never the only signal: the tick carries aria-current and this
+    // debounced region spells the position out.
+    live.textContent = stage === 0 ? label : `Stage ${stage} of ${stageCount}: ${label}`;
   }, 300);
 
-  const journeyIO = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        document.body.dataset.journey = String(e.isIntersecting);
-      }
-    },
-    { threshold: 0 }
-  );
+  const setJourney = (active: boolean): void => {
+    if (active === journeyActive) return;
+    journeyActive = active;
+    document.body.dataset.journey = String(active);
+  };
+
   const journey = $('[data-journey]');
-  if (journey) journeyIO.observe(journey);
+  if (journey && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) setJourney(e.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+    io.observe(journey);
+  }
 
   return {
     update(P, stage) {
-      if (fill) fill.style.transform = `scaleY(${Math.min(1, Math.max(0, P))})`;
+      const p = Math.min(1, Math.max(0, P));
+      if (fill && Math.abs(p - lastFill) > 0.0005) {
+        lastFill = p;
+        fill.style.transform = `scaleY(${p})`;
+      }
       if (stage !== current) {
         current = stage;
         ticks.forEach((t, i) => {
@@ -40,9 +62,11 @@ export function initRail(): Rail {
       }
     },
     setJourneyActive(active) {
-      document.body.dataset.journey = String(active);
+      setJourney(active);
     },
     setLaunch(active) {
+      if (active === launch) return;
+      launch = active;
       document.body.dataset.launch = String(active);
     }
   };
