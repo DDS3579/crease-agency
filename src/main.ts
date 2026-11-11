@@ -6,6 +6,7 @@ import { initReveals } from './ui/reveals';
 import { initForm } from './ui/form';
 import { initContactCta } from './ui/contact-cta';
 import { initRail } from './ui/rail';
+import { initSmoothScroll } from './ui/smooth';
 
 const caps = detectCapabilities();
 document.documentElement.dataset.reducedMotion = String(caps.reducedMotion);
@@ -15,6 +16,7 @@ initReveals();
 initForm();
 initContactCta();
 const rail = initRail();
+initSmoothScroll(caps);
 
 if (caps.mode === 'stage') {
   const ticker = new Ticker();
