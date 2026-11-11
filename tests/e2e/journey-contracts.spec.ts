@@ -169,10 +169,21 @@ test('the progress rail tracks P, marks the active tick and announces it', async
   await expect(page.locator('body')).toHaveAttribute('data-journey', 'false');
 });
 
-test('native anchor navigation lands below the fixed nav', async ({ page }) => {
+test('anchor navigation lands below the fixed nav', async ({ page }) => {
   await page.goto('/?debug=1', { waitUntil: 'load' });
   await page.locator('.nav-links a[href="#services"]').click();
-  await page.waitForTimeout(400);
+  // Smooth scrolling animates the jump; wait for the position to come to rest.
+  await page.waitForFunction(() => {
+    const w = window as unknown as { __scrollRest?: { y: number; n: number } };
+    const y = window.scrollY;
+    const probe = (w.__scrollRest ??= { y, n: 0 });
+    if (Math.abs(y - probe.y) > 0.5) {
+      probe.y = y;
+      probe.n = 0;
+      return false;
+    }
+    return ++probe.n >= 5;
+  }, null, { timeout: 10_000, polling: 100 });
   const top = await page.locator('#services').evaluate((n) => n.getBoundingClientRect().top);
   const navHeight = await page.locator('.nav').evaluate((n) => n.getBoundingClientRect().height);
   expect(top).toBeGreaterThanOrEqual(-2);
