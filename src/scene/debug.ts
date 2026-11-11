@@ -1,12 +1,15 @@
 import type { SceneState } from '../content/journey';
 import type { Capabilities, LadderLevel } from '../lib/tier';
-import type { RenderStats, SamplePoint } from './renderer';
+import type { RenderStats } from './renderer';
+
+export interface SamplePoint { x: number; y: number }
 
 export interface CreaseDebug {
   P: number;
   stage: number;
   key: string;
   folds: Record<string, number>;
+  score: Record<string, number>;
   ink: readonly [number, number, number];
   camera: SceneState['camera'];
   tier: string;
@@ -28,10 +31,7 @@ export interface CreaseDebug {
   };
   caps?: Capabilities;
   setP?: (p: number) => void;
-  gpuParity?: (
-    points: [number, number][],
-    key: string
-  ) => { maxError: number; cpu: number[]; gpu: number[] };
+  gpuParity?: (points: [number, number][], key: string) => { maxError: number; cpu: number[]; gpu: number[] };
   samplePixels?: (points: SamplePoint[]) => number[][];
   forceRender?: () => void;
   dispose?: () => void;
@@ -51,15 +51,15 @@ export function publishDebug(
   ladder: LadderLevel,
   activity: Float32Array,
   caps: Capabilities,
-  printLoaded: boolean
+  printLoaded = false
 ): void {
-  const prev = window.__crease;
   window.__crease = {
-    ...prev,
+    ...window.__crease,
     P: state.P,
     stage: state.stage,
     key: state.key,
     folds: state.folds,
+    score: state.score,
     ink: state.ink,
     camera: state.camera,
     tier,
