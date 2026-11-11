@@ -1,6 +1,6 @@
 import type { SceneState } from '../content/journey';
 import type { Capabilities, LadderLevel } from '../lib/tier';
-import type { RenderStats } from './renderer';
+import type { RenderStats, SamplePoint } from './renderer';
 
 export interface CreaseDebug {
   P: number;
@@ -18,11 +18,21 @@ export interface CreaseDebug {
   textureCount: number;
   gpuMemoryMB: number;
   activity: number[];
+  printLoaded?: boolean;
   posterReady?: boolean;
-  geometry?: { keyP: readonly number[]; dwellEndP: readonly number[]; scrollRange: number; journeyTop: number };
+  geometry?: {
+    keyP: readonly number[];
+    dwellEndP: readonly number[];
+    scrollRange: number;
+    journeyTop: number;
+  };
   caps?: Capabilities;
   setP?: (p: number) => void;
-  gpuParity?: (points: [number, number][], key: string) => { maxError: number; cpu: number[]; gpu: number[] };
+  gpuParity?: (
+    points: [number, number][],
+    key: string
+  ) => { maxError: number; cpu: number[]; gpu: number[] };
+  samplePixels?: (points: SamplePoint[]) => number[][];
   forceRender?: () => void;
   dispose?: () => void;
 }
@@ -34,7 +44,15 @@ declare global {
   }
 }
 
-export function publishDebug(state: SceneState, stats: RenderStats, tier: string, ladder: LadderLevel, activity: Float32Array, caps: Capabilities): void {
+export function publishDebug(
+  state: SceneState,
+  stats: RenderStats,
+  tier: string,
+  ladder: LadderLevel,
+  activity: Float32Array,
+  caps: Capabilities,
+  printLoaded: boolean
+): void {
   const prev = window.__crease;
   window.__crease = {
     ...prev,
@@ -53,6 +71,7 @@ export function publishDebug(state: SceneState, stats: RenderStats, tier: string
     textureCount: stats.textureCount,
     gpuMemoryMB: stats.gpuMemoryMB,
     activity: Array.from(activity),
+    printLoaded,
     caps
   };
 }
