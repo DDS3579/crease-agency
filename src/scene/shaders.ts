@@ -37,8 +37,8 @@ vec3 rotAxis(vec3 v, vec3 ax, float a) {
   return v * c + cross(ax, v) * s + ax * dot(ax, v) * (1.0 - c);
 }
 
-void foldVertex(vec2 flat, out vec3 pos, out vec3 nrm, out float layer) {
-  pos = vec3(flat, 0.0);
+void foldVertex(vec2 flatPos, out vec3 pos, out vec3 nrm, out float layer) {
+  pos = vec3(flatPos, 0.0);
   nrm = vec3(0.0, 0.0, 1.0);
   vec3 rigid = nrm;
   float weight = 0.0;
@@ -47,11 +47,11 @@ void foldVertex(vec2 flat, out vec3 pos, out vec3 nrm, out float layer) {
   for (int o = 0; o < 8; o++) {
     if (o >= uFoldCount) break;
     int i = uOrder[o];
-    if (!insideFold(i, flat)) continue;
+    if (!insideFold(i, flatPos)) continue;
     float theta = uAngle[i];
     if (abs(theta) < 1e-7) continue;
 
-    float d = sideDist(i, flat);
+    float d = sideDist(i, flatPos);
     if (d > 0.0) layer += 1.0;
     weight += 1.0;
 
