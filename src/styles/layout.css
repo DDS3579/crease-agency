@@ -1,0 +1,10 @@
+.section { position: relative; z-index: 10; padding: clamp(4rem, 10svh, 8rem) var(--pad); }
+.section-paper { background: var(--paper); }
+.section-inner { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--gap); }
+.section-inner > h2, .work-heading, .contact-intro { grid-column: 1 / 7; }
+.services-list, .work-list { grid-column: 1 / -1; }
+.work-heading { display: flex; align-items: baseline; gap: 1rem; }
+.demo-note { color: var(--muted); }
+@media (max-width: 767px) {
+  .section-inner > h2, .work-heading, .contact-intro { grid-column: 1 / -1; }
+}

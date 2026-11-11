@@ -1,0 +1,15 @@
+.nav { position: fixed; inset: 0 0 auto 0; z-index: 50; background: var(--raised); border-bottom: 1px solid transparent; }
+body[data-scrolled="true"] .nav { border-bottom-color: var(--line); }
+.nav-inner { max-width: 1440px; margin: 0 auto; min-height: var(--nav-h); padding: 0 var(--pad); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--gap); }
+.wordmark { font-family: var(--display); font-weight: 700; letter-spacing: -0.04em; font-size: 1.5rem; line-height: 1; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
+.nav-links { display: flex; justify-content: center; gap: clamp(0.5rem, 2vw, 1.5rem); }
+.nav-links a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.35rem; text-decoration: none; font-size: 0.9375rem; color: var(--muted); }
+.nav-links a:hover { color: var(--ink); }
+.nav-cta { white-space: nowrap; }
+@media (max-width: 767px) {
+  .nav-inner { grid-template-columns: 1fr auto; grid-template-rows: 3.25rem 3.25rem; padding-block: 0; }
+  .wordmark { grid-column: 1; grid-row: 1; }
+  .nav-cta { grid-column: 2; grid-row: 1; padding-inline: 0.75rem; font-size: 0.8125rem; }
+  .nav-links { grid-column: 1 / -1; grid-row: 2; justify-content: space-between; gap: 0.25rem; }
+  .nav-links a { font-size: 0.8125rem; padding: 0 0.25rem; }
+}

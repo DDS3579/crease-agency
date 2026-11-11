@@ -1,0 +1,7 @@
+/* Self-hosted Fontsource Latin subsets. Verified axes: Funnel Display: 17740 bytes, axes wght 300..800 | Funnel Sans: 17440 bytes, axes wght 300..800 | Azeret Mono: 26164 bytes, axes wght 100..900 */
+@font-face { font-family: "Funnel Display"; src: url("/fonts/funnel-display-latin-wght-normal.woff2") format("woff2"); font-weight: 300 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Funnel Display Fallback"; src: local("Arial"); size-adjust: 96%; ascent-override: 100%; descent-override: 25%; line-gap-override: 0%; }
+@font-face { font-family: "Funnel Sans"; src: url("/fonts/funnel-sans-latin-wght-normal.woff2") format("woff2"); font-weight: 300 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Funnel Sans Fallback"; src: local("Arial"); size-adjust: 96%; ascent-override: 100%; descent-override: 25%; line-gap-override: 0%; }
+@font-face { font-family: "Azeret Mono"; src: url("/fonts/azeret-mono-latin-wght-normal.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Azeret Mono Fallback"; src: local("Courier New"); size-adjust: 92%; ascent-override: 94%; descent-override: 23%; line-gap-override: 0%; }

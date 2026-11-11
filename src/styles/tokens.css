@@ -1,0 +1,21 @@
+:root {
+  --desk: #E6E3DB;
+  --paper: #F4F2EC;
+  --raised: #FBFAF7;
+  --ink: #14130F;
+  --muted: #56534A;
+  --line: rgb(20 19 15 / 0.16);
+  --back: #2B2924;
+  --crease: #E2400F;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --pad: clamp(1.25rem, 4vw, 4rem);
+  --gap: clamp(0.75rem, 1.5vw, 1.5rem);
+  --nav-h: 4rem;
+  --display: "Funnel Display", "Funnel Display Fallback", sans-serif;
+  --text: "Funnel Sans", "Funnel Sans Fallback", sans-serif;
+  --mono: "Azeret Mono", "Azeret Mono Fallback", monospace;
+  color-scheme: light;
+}
+@media (max-width: 767px) {
+  :root { --nav-h: 6.5rem; }
+}
