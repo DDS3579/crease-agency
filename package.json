@@ -4,9 +4,7 @@
   "version": "0.1.0",
   "type": "module",
   "packageManager": "pnpm@12.18.0",
-  "engines": {
-    "node": ">=22.19.0"
-  },
+  "engines": { "node": ">=22.19.0" },
   "scripts": {
     "render": "tsx scripts/render-html.ts",
     "fonts": "tsx scripts/fonts.ts",
@@ -15,20 +13,23 @@
     "prebuild": "pnpm fonts && pnpm render && pnpm typecheck",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
+    "serve": "tsx scripts/serve.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
     "posters": "tsx scripts/posters.ts",
     "qa": "tsx scripts/qa.ts",
     "trace": "tsx scripts/trace.ts",
+    "template-test": "tsx scripts/template-test.ts",
     "engine-choice": "tsx scripts/engine-choice.ts",
     "size": "size-limit",
     "lhci": "lhci autorun",
-    "harness": "pnpm test && pnpm build && pnpm size && pnpm qa"
+    "lhci:desktop": "lhci autorun --config=lighthouserc.desktop.cjs",
+    "harness": "pnpm qa && pnpm lhci && pnpm lhci:desktop && pnpm trace && pnpm template-test && pnpm engine-choice"
   },
-  "dependencies": {
-    "zod": "4.6.7"
-  },
+  "dependencies": { "zod": "4.6.7" },
   "devDependencies": {
     "@axe-core/playwright": "4.14.0",
     "@fontsource-variable/azeret-mono": "5.3.0",
@@ -48,20 +49,8 @@
     "vitest": "5.1.0"
   },
   "size-limit": [
-    {
-      "name": "initial JS",
-      "path": "dist/assets/main-*.js",
-      "limit": "12 KB"
-    },
-    {
-      "name": "scene chunk",
-      "path": "dist/assets/scene-*.js",
-      "limit": "80 KB"
-    },
-    {
-      "name": "CSS",
-      "path": "dist/assets/*.css",
-      "limit": "18 KB"
-    }
+    { "name": "initial JS", "path": "dist/assets/main-*.js", "limit": "12 KB" },
+    { "name": "scene chunk", "path": "dist/assets/scene-*.js", "limit": "80 KB" },
+    { "name": "CSS", "path": "dist/assets/*.css", "limit": "18 KB" }
   ]
 }
