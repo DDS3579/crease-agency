@@ -1,0 +1,185 @@
+/* Every hover here is transform, opacity or colour only. No layout, no shadows. */
+
+.btn {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  transition:
+    color 0.34s var(--ease),
+    border-color 0.34s var(--ease),
+    transform 0.24s var(--ease);
+}
+
+/* Inversion panel. inset:0 keeps the 1px ink border visible, so a hovered solid
+   button still has an edge on a paper background. */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  transform: scaleY(0);
+  transform-origin: 50% 100%;
+  transition: transform 0.42s var(--ease);
+}
+.btn-solid::before { background: var(--paper); }
+.btn-ghost::before { background: var(--ink); }
+
+/* Folded corner. currentColor flips with the label. */
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 11px;
+  height: 11px;
+  background: currentColor;
+  clip-path: polygon(100% 0, 0 0, 100% 100%);
+  transform: scale(0);
+  transform-origin: 100% 0;
+  opacity: 0.5;
+  transition: transform 0.3s var(--ease) 0.06s;
+}
+
+.btn:focus-visible::before { transform: scaleY(1); }
+.btn:focus-visible::after { transform: scale(1); }
+.btn-solid:focus-visible { color: var(--ink); }
+.btn-ghost:focus-visible { color: var(--paper); }
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover { transform: translateY(-1px); }
+  .btn:hover::before { transform: scaleY(1); }
+  .btn:hover::after { transform: scale(1); }
+  .btn-solid:hover { color: var(--ink); }
+  .btn-ghost:hover { color: var(--paper); }
+  .btn:active { transform: translateY(0); transition-duration: 0.08s; }
+}
+
+.btn[disabled] { transform: none; }
+.btn[disabled]::before,
+.btn[disabled]::after { display: none; }
+
+/* Nav links: rule draws from the left. */
+.nav-links a { position: relative; transition: color 0.28s var(--ease); }
+.nav-links a::after {
+  content: "";
+  position: absolute;
+  left: 0.35rem;
+  right: 0.35rem;
+  bottom: 11px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.32s var(--ease);
+}
+.nav-links a[aria-current="true"] { text-decoration: none; }
+.nav-links a[aria-current="true"]::after { transform: scaleX(1); }
+@media (hover: hover) and (pointer: fine) {
+  .nav-links a:hover::after { transform: scaleX(1); }
+}
+
+.wordmark { transition: transform 0.24s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .wordmark:hover { transform: translateY(-1px); }
+}
+
+/* Rail: transform, not width, so nothing reflows. */
+.tick-mark {
+  transform-origin: 100% 50%;
+  transition: transform 0.3s var(--ease), opacity 0.3s var(--ease);
+}
+.rail a[aria-current="step"] .tick-mark { width: 16px; transform: scaleX(1.625); opacity: 1; }
+.rail a:focus-visible .tick-mark { transform: scaleX(1.625); opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .rail a:hover .tick-mark { transform: scaleX(1.625); opacity: 1; }
+}
+
+/* Services: the name steps into the margin. */
+.service-row { transition: border-color 0.3s var(--ease); }
+.service-row h3 { transition: transform 0.36s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .service-row:hover { border-bottom-color: var(--ink); }
+  .service-row:hover h3 { transform: translateX(6px); }
+}
+
+/* Work: the crease diagram comes forward, the frame goes to ink. */
+.work-thumb {
+  contain: layout paint;
+  transition: border-color 0.34s var(--ease);
+}
+.work-thumb svg { opacity: 0.82; transition: opacity 0.34s var(--ease); }
+.work-meta h3 { transition: transform 0.36s var(--ease); }
+@media (hover: hover) and (pointer: fine) {
+  .work-row:hover .work-thumb { border-color: var(--ink); }
+  .work-row:hover .work-thumb svg { opacity: 1; }
+  .work-row:hover .work-meta h3 { transform: translateX(4px); }
+}
+
+/* Inline links: rule draws under, never a colour shift alone. */
+.footer a,
+.contact-email,
+.socials a {
+  position: relative;
+  text-decoration: none;
+  transition: color 0.28s var(--ease);
+}
+.footer a::after,
+.contact-email::after,
+.socials a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 10px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.32s var(--ease);
+}
+.contact-email::after { bottom: 12px; }
+@media (hover: hover) and (pointer: fine) {
+  .footer a:hover,
+  .contact-email:hover,
+  .socials a:hover { color: var(--ink); }
+  .footer a:hover::after,
+  .contact-email:hover::after,
+  .socials a:hover::after { transform: scaleX(1); }
+}
+
+.field input,
+.field select,
+.field textarea {
+  transition: border-color 0.24s var(--ease), background-color 0.24s var(--ease);
+}
+@media (hover: hover) and (pointer: fine) {
+  .field input:hover,
+  .field select:hover,
+  .field textarea:hover { border-color: var(--muted); }
+}
+.field input:focus,
+.field select:focus,
+.field textarea:focus { border-color: var(--ink); }
+
+.skip-link { transition: transform 0.2s var(--ease); }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn::before,
+  .btn::after,
+  .nav-links a::after,
+  .wordmark,
+  .tick-mark,
+  .service-row h3,
+  .work-thumb,
+  .work-thumb svg,
+  .work-meta h3,
+  .footer a::after,
+  .contact-email::after,
+  .socials a::after,
+  .skip-link { transition-duration: 0.01ms; }
+  .btn:hover, .wordmark:hover, .service-row:hover h3, .work-row:hover .work-meta h3 { transform: none; }
+  .btn::before, .btn::after { transform: none; }
+  .btn:hover::before, .btn:focus-visible::before { transform: scaleY(1); }
+  .btn::after { display: none; }
+}
