@@ -1,0 +1,8 @@
+node_modules
+dist
+.pnpm-store
+test-results
+playwright-report
+.lighthouseci
+*.trace.json
+.DS_Store

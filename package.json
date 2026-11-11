@@ -1,0 +1,67 @@
+{
+  "name": "crease-demo",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=22.19.0"
+  },
+  "scripts": {
+    "render": "tsx scripts/render-html.ts",
+    "fonts": "tsx scripts/fonts.ts",
+    "predev": "pnpm fonts && pnpm render",
+    "dev": "vite --host 0.0.0.0",
+    "prebuild": "pnpm fonts && pnpm render && pnpm typecheck",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "posters": "tsx scripts/posters.ts",
+    "qa": "tsx scripts/qa.ts",
+    "trace": "tsx scripts/trace.ts",
+    "engine-choice": "tsx scripts/engine-choice.ts",
+    "size": "size-limit",
+    "lhci": "lhci autorun",
+    "harness": "pnpm test && pnpm build && pnpm size && pnpm qa"
+  },
+  "dependencies": {
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@fontsource-variable/azeret-mono": "5.3.0",
+    "@fontsource-variable/funnel-display": "5.3.0",
+    "@fontsource-variable/funnel-sans": "5.3.0",
+    "@lhci/cli": "0.16.0",
+    "@playwright/test": "1.65.0",
+    "@size-limit/file": "14.3.0",
+    "@types/node": "26.6.6",
+    "fontkit": "2.0.4",
+    "playwright": "1.65.0",
+    "sharp": "0.35.5",
+    "size-limit": "14.3.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vite": "8.3.8",
+    "vitest": "5.1.0"
+  },
+  "size-limit": [
+    {
+      "name": "initial JS",
+      "path": "dist/assets/main-*.js",
+      "limit": "12 KB"
+    },
+    {
+      "name": "scene chunk",
+      "path": "dist/assets/scene-*.js",
+      "limit": "80 KB"
+    },
+    {
+      "name": "CSS",
+      "path": "dist/assets/*.css",
+      "limit": "18 KB"
+    }
+  ]
+}
