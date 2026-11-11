@@ -5,7 +5,9 @@ export function initContactCta(): void {
     a.addEventListener('click', (e) => {
       e.preventDefault();
       const target = document.getElementById('contact');
-      target?.scrollIntoView({ behavior: 'auto', block: 'start' });
+      const lenis = window.__lenis;
+      if (lenis && target) lenis.scrollTo(target);
+      else target?.scrollIntoView({ behavior: 'auto', block: 'start' });
       const first = document.getElementById('f-name') as HTMLInputElement | null;
       first?.focus({ preventScroll: true });
       history.replaceState(null, '', '#contact');
