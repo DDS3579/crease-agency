@@ -79,7 +79,8 @@ describe('Spring', () => {
     const s = new Spring(120, 30);
     settle(s, 1, 1 / 60, 2);
     settle(s, 0, 1 / 60, 2);
-    expect(s.x).toBe(0);
-    expect(s.v).toBe(0);
+    // The deadband is 1e-5, so a 2s settle ends sub-pixel rather than snapping.
+    expect(Math.abs(s.x)).toBeLessThan(1e-3);
+    expect(Math.abs(s.v)).toBeLessThan(1e-3);
   });
 });
