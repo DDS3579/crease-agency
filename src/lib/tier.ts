@@ -77,7 +77,8 @@ export interface QualitySettings {
 
 export function ladderSettings(level: LadderLevel, base: Tier): QualitySettings {
   if (level === 'poster' || base === 'poster') {
-    return { dprCap: 1, renderScale: 1, mesh: [64, 40], fibre: false, curl: false, msaa: false, bendWidth: 0.07 };
+    // Below A2 on every axis, so the ladder never improves as it descends.
+    return { dprCap: 1, renderScale: 0.75, mesh: [64, 40], fibre: false, curl: false, msaa: false, bendWidth: 0.07 };
   }
   if (base === 'B') {
     return { dprCap: 1.25, renderScale: 1, mesh: [64, 40], fibre: false, curl: false, msaa: false, bendWidth: 0.07 };

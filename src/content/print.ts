@@ -175,10 +175,10 @@ export function drawPrint(
   content: PrintContent = printContent
 ): void {
   ctx.save();
+  ctx.globalCompositeOperation = 'lighter';
   ctx.clearRect(0, 0, size.width, size.height);
   ctx.fillStyle = '#000';
   ctx.fillRect(0, 0, size.width, size.height);
-  ctx.globalCompositeOperation = 'lighter';
   drawStructure(ctx, size, content);
   drawType(ctx, size, content);
   drawInterface(ctx, size, content);

@@ -21,7 +21,8 @@ export class Spring {
       this.v += a * h;
       this.x += this.v * h;
     }
-    if (Math.abs(target - this.x) < 1e-5 && Math.abs(this.v) < 1e-5) {
+    // Snap inside a sub-pixel deadband so a settled sheet stops rendering.
+    if (Math.abs(target - this.x) < 1e-3 && Math.abs(this.v) < 1e-3) {
       this.x = target;
       this.v = 0;
       return false;

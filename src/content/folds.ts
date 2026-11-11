@@ -179,6 +179,8 @@ export function cornerCurlFold(corner: 'tl' | 'tr' | 'bl' | 'br', angle: number)
   const sy = corner === 'tl' || corner === 'tr' ? 1 : -1;
   const cut = 0.35;
   const axisPoint: Vec2 = [sx * (1 - cut / 2), sy * (SHEET.halfH - cut / 2)];
-  const axisDir = norm2([-sx * cut, sy * cut]);
+  // The corner must be the moving region, so the axis' left normal has to point
+  // at it: leftNormal(dir) = (sx, sy) gives dir = (sy, -sx).
+  const axisDir = norm2([sy * cut, -sx * cut]);
   return { id: 'curl', axisPoint, axisDir, parent: null, angle };
 }
