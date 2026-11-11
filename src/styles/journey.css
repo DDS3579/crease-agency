@@ -10,6 +10,8 @@
   pointer-events: none;
   overflow: clip;
   background: var(--desk);
+  /* Isolates layout + paint so the sticky layer never invalidates the document. */
+  contain: layout paint style;
 }
 
 .stage-picture { display: contents; }
@@ -40,6 +42,7 @@
   opacity: 0;
   transition: opacity 400ms var(--ease);
   touch-action: pan-y;
+  transform: translateZ(0);
 }
 
 body[data-scene-ready="true"] .stage-poster.is-active { opacity: 0; }
@@ -127,6 +130,7 @@ body[data-journey="true"] .rail { opacity: 1; pointer-events: auto; }
   background: var(--crease);
   transform-origin: top;
   transform: scaleY(0);
+  will-change: transform;
 }
 
 /* Portrait: sheet holds the top of the stage, text owns the bottom band, and
