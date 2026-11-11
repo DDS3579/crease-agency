@@ -1,8 +1,8 @@
 /**
  * Shared fold math, included by the sheet and parity vertex shaders. The fragment
- * shader reuses the uniform block and sideDist() for crease lines and fold AO.
- * Mirrors `applyFoldsFull` in content/folds.ts exactly, including the constant
- * per-region layer weight that keeps the mapping isometric.
+ * shader reuses the uniform block and sideDist() for crease lines, fold AO and
+ * the scored crease. Mirrors `applyFoldsFull` in content/folds.ts exactly,
+ * including the rigid per-region layer weight that keeps the mapping isometric.
  */
 export const FOLD_GLSL = /* glsl */ `
 uniform vec2 uAxisPoint[8];
@@ -118,6 +118,7 @@ uniform float uWrap;
 uniform float uExposure;
 uniform float uFibre;
 uniform float uActivity[8];
+uniform float uScore[8];
 
 ${FOLD_GLSL}
 
@@ -127,6 +128,11 @@ float creaseLine(int i, vec2 p) {
   float d = sideDist(i, p);
   float w = max(fwidth(d), 1e-5);
   return 1.0 - smoothstep(w * 0.35, w * 1.6, abs(d));
+}
+
+/* Normalised position along the crease, so a scored line can draw itself on. */
+float alongAxis(int i, vec2 p) {
+  return clamp(dot(p - uAxisPoint[i], uAxisDir[i]) / 2.4 + 0.5, 0.0, 1.0);
 }
 
 void main() {
@@ -160,11 +166,17 @@ void main() {
   for (int i = 0; i < 8; i++) {
     if (i >= uFoldCount) break;
     float act = clamp(uActivity[i], 0.0, 1.0);
-    if (abs(uAngle[i]) < 0.001 && act < 0.001) continue;
+    float score = clamp(uScore[i], 0.0, 1.0);
+    float folded = max(smoothstep(0.0, 0.02, abs(uAngle[i])), act);
+    float drawOn = score > 0.001
+      ? 1.0 - smoothstep(score - 0.05, score + 0.05, alongAxis(i, vFlat))
+      : 0.0;
+    float mask = max(folded, drawOn);
+    if (mask <= 0.001) continue;
     float line = creaseLine(i, vFlat);
     if (line <= 0.0) continue;
-    vec3 lineCol = mix(uInk, uCrease, act);
-    col = mix(col, lineCol, line * (0.55 + 0.45 * act));
+    // Scoring is ink. Only motion earns the accent.
+    col = mix(col, mix(uInk, uCrease, act), line * mask * (0.55 + 0.45 * act));
   }
 
   outColor = vec4(col, 1.0);
