@@ -134,7 +134,18 @@ test('a failing endpoint reports the error state and re-enables the form', async
 test('the Start a project CTAs scroll to the form and focus its first field', async ({ page }) => {
   await page.goto('/', { waitUntil: 'load' });
   await page.locator('.hero-cta [data-start-project]').click();
-  await page.waitForTimeout(300);
+  // Smooth scrolling animates the jump; wait for the position to come to rest.
+  await page.waitForFunction(() => {
+    const w = window as unknown as { __scrollRest?: { y: number; n: number } };
+    const y = window.scrollY;
+    const probe = (w.__scrollRest ??= { y, n: 0 });
+    if (Math.abs(y - probe.y) > 0.5) {
+      probe.y = y;
+      probe.n = 0;
+      return false;
+    }
+    return ++probe.n >= 5;
+  }, null, { timeout: 10_000, polling: 100 });
   expect(await page.evaluate(() => document.activeElement?.id)).toBe('f-name');
   expect(page.url()).toContain('#contact');
   const top = await page.locator('#contact').evaluate((n) => n.getBoundingClientRect().top);
