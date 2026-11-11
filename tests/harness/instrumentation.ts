@@ -47,7 +47,7 @@ export function instrumentLayoutReads(): void {
       const getter = desc.get;
       Object.defineProperty(proto, name, {
         configurable: true,
-        enumerable: desc.enumerable,
+        enumerable: desc.enumerable ?? false,
         get: function (this: unknown) {
           bump(name);
           return getter.call(this);

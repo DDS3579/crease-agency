@@ -19,18 +19,18 @@ describe('keyframe table', () => {
   });
 
   it('earns ink stage by stage and ends blank', () => {
-    expect(keyframes[0].ink).toEqual([0, 0, 0]);
-    expect(keyframes[1].ink).toEqual([1, 0, 0]);
-    expect(keyframes[2].ink).toEqual([1, 1, 0]);
-    expect(keyframes[3].ink).toEqual([1, 1, 1]);
-    expect(keyframes[4].ink).toEqual([0, 0, 0]);
+    expect(keyframes[0]!.ink).toEqual([0, 0, 0]);
+    expect(keyframes[1]!.ink).toEqual([1, 0, 0]);
+    expect(keyframes[2]!.ink).toEqual([1, 1, 0]);
+    expect(keyframes[3]!.ink).toEqual([1, 1, 1]);
+    expect(keyframes[4]!.ink).toEqual([0, 0, 0]);
   });
 
   it('gives Launch no panel and a centred object', () => {
-    expect(keyframes[4].panel).toBe('none');
-    expect(keyframes[4].centreX).toBe(0.5);
-    expect(keyframes[4].camera.el).toBe(90);
-    expect(keyframes[4].camera.dist).toBe('cover');
+    expect(keyframes[4]!.panel).toBe('none');
+    expect(keyframes[4]!.centreX).toBe(0.5);
+    expect(keyframes[4]!.camera.el).toBe(90);
+    expect(keyframes[4]!.camera.dist).toBe('cover');
   });
 
   it('alternates the panel side against the object', () => {

@@ -20,10 +20,10 @@ export function initForm(): void {
   const email = $<HTMLInputElement>('#f-email', form);
   const type = $<HTMLSelectElement>('#f-type', form);
   const message = $<HTMLTextAreaElement>('#f-message', form);
-  const nameError = $('#f-name-error', form);
-  const emailError = $('#f-email-error', form);
-  const typeError = $('#f-type-error', form);
-  const messageError = $('#f-message-error', form);
+  const nameError = $<HTMLElement>('#f-name-error', form);
+  const emailError = $<HTMLElement>('#f-email-error', form);
+  const typeError = $<HTMLElement>('#f-type-error', form);
+  const messageError = $<HTMLElement>('#f-message-error', form);
   if (!name || !email || !type || !message || !nameError || !emailError || !typeError || !messageError) {
     return;
   }

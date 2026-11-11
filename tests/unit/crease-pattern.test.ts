@@ -30,7 +30,7 @@ describe('creasePattern', () => {
       expect(svg).not.toContain(palette.crease);
       expect(svg.toLowerCase()).not.toContain('#e2400f');
       expect(svg).not.toMatch(/rgb\(/i);
-      const colours = [...svg.matchAll(/(?:stroke|fill)="(#[0-9A-Fa-f]{6})"/g)].map((m) => m[1]);
+      const colours = [...svg.matchAll(/(?:stroke|fill)="(#[0-9A-Fa-f]{6})"/g)].map((m) => m[1] ?? '');
       expect(colours.length).toBeGreaterThan(0);
       for (const c of colours) expect(c.toUpperCase()).toBe(palette.ink.toUpperCase());
     }
