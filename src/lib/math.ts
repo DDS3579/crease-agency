@@ -12,6 +12,26 @@ export function easeInOutCubic(t: number): number {
   return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
 }
 
+export function easeOutCubic(t: number): number {
+  const x = clamp01(t);
+  return 1 - Math.pow(1 - x, 3);
+}
+
+export function easeInOutQuart(t: number): number {
+  const x = clamp01(t);
+  return x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2;
+}
+
+export function easeInOutQuint(t: number): number {
+  const x = clamp01(t);
+  return x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2;
+}
+
+export function smoothstep(edge0: number, edge1: number, x: number): number {
+  const t = clamp01((x - edge0) / (edge1 - edge0 || 1));
+  return t * t * (3 - 2 * t);
+}
+
 /** Returns an equivalent target angle reachable by the shortest arc from `from`. */
 export function shortestArcDeg(from: number, to: number): number {
   let d = (to - from) % 360;
