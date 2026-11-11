@@ -1,6 +1,6 @@
 import { LAYER_EPSILON, cornerCurlFold, createFoldState, type Fold } from '../content/folds';
 import type { SceneState } from '../content/journey';
-import { clamp, clamp01, degToRad, type Vec2 } from '../lib/math';
+import { clamp, clamp01, degToRad, smoothstep, type Vec2 } from '../lib/math';
 import { calibratedExposure, LIGHT_DIR, palette, WRAP } from '../lib/exposure';
 import { ladderSettings, type LadderLevel, type Tier } from '../lib/tier';
 import { buildSheetMesh, shadowIndices, shadowVertices } from './mesh';
@@ -61,6 +61,7 @@ export class SceneRenderer {
 
   stats: RenderStats = { renders: 0, drawCalls: 0, triangles: 0, textureCount: 0, gpuMemoryMB: 0 };
   activity = new Float32Array(8);
+  private uScore = new Float32Array(8);
 
   private prevAngles: Record<string, number> = {};
   private sheetProg: WebGLProgram;
@@ -198,6 +199,7 @@ export class SceneRenderer {
     for (const n of ['uProj', 'uView', 'uOpacity']) {
       this.shadowUniforms[n] = gl.getUniformLocation(this.shadowProg, n);
     }
+    this.uniforms.uScore = gl.getUniformLocation(this.sheetProg, 'uScore');
   }
 
   private foldLocations(prog: WebGLProgram): FoldUniforms {
@@ -370,7 +372,8 @@ export class SceneRenderer {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
     this.stats.drawCalls = 0;
 
-    const shadowOpacity = 0.11 * (1 - state.launchT);
+    // Holds while the object still stands, fades as the sheet flattens.
+    const shadowOpacity = 0.11 * (1 - smoothstep(0.48, 0.92, state.launchT));
     if (shadowOpacity > 0.001) {
       gl.useProgram(this.shadowProg);
       gl.enable(gl.BLEND);
@@ -404,6 +407,8 @@ export class SceneRenderer {
     gl.uniform1f(u.uExposure!, EXPOSURE);
     gl.uniform1f(u.uFibre!, s.fibre ? 1 - state.launchT : 0);
     gl.uniform1fv(u.uActivity!, this.activity);
+    for (let i = 0; i < 8; i++) this.uScore[i] = state.score[folds[i]?.id ?? ''] ?? 0;
+    gl.uniform1fv(u.uScore!, this.uScore);
     gl.bindVertexArray(this.sheetVao);
     gl.drawElements(gl.TRIANGLES, this.meshTriangles * 3, gl.UNSIGNED_SHORT, 0);
     this.stats.drawCalls++;
