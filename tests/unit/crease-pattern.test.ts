@@ -87,7 +87,8 @@ describe('creasePattern', () => {
 
   it('references nothing external', () => {
     for (const p of projects) {
-      const svg = creasePattern(p.seed);
+      // A standalone SVG needs the xmlns declaration; nothing else may be remote.
+      const svg = creasePattern(p.seed).replace('xmlns="http://www.w3.org/2000/svg"', '');
       expect(svg).not.toMatch(/https?:\/\//);
       expect(svg).not.toContain('<image');
       expect(svg).not.toContain('xlink:href');

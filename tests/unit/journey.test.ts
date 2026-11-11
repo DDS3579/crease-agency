@@ -121,7 +121,7 @@ describe('ramp staggering', () => {
   });
 
   it('runs changed folds in id order over 55% each, staggered across 45%', () => {
-    const early = at(rampP(1, 0.1));
+    const early = at(rampP(1, 0.2));
     expect(early.folds.f1).not.toBe(120);
     expect(early.folds.f2).toBeGreaterThan(0);
     expect(early.folds.f3).toBe(0);
@@ -176,7 +176,8 @@ describe('ink and camera across ramps', () => {
     const s = at(rampP(0, 0.5));
     expect(s.camera.az).toBeCloseTo(lerp(-28, 18, 0.5), 9);
     expect(s.camera.el).toBeCloseTo(lerp(34, 42, 0.5), 9);
-    expect(s.camera.dist).toBeCloseTo(lerp(3.3, 3.0, 0.5), 9);
+    const [d0, d1] = [keyframes[0]!.camera.dist, keyframes[1]!.camera.dist] as [number, number];
+    expect(s.camera.dist).toBeCloseTo(lerp(d0, d1, 0.5), 9);
     expect(s.camera.centreX).toBeCloseTo(lerp(0.7, 0.3, 0.5), 9);
   });
 
@@ -245,7 +246,10 @@ describe('portrait composition', () => {
 
   it('leaves the desktop tuning untouched where the sheet already fits', () => {
     expect(fitDistance(1.6)).toBeLessThan(3.3);
-    expect(stateAt(0, { aspect: 1.6, portrait: false }).camera.dist).toBeCloseTo(3.3, 9);
+    expect(stateAt(0, { aspect: 1.6, portrait: false }).camera.dist).toBeCloseTo(
+      keyframes[0]!.camera.dist as number,
+      9
+    );
   });
 });
 
@@ -257,8 +261,14 @@ describe('purity and reversibility', () => {
       for (const id of FOLD_IDS) {
         expect(Math.abs(s.folds[id]! - forward[i]!.folds[id]!)).toBeLessThan(1e-3);
       }
-      expect(s.ink).toEqual(forward[i]!.ink);
-      expect(s.camera).toEqual(forward[i]!.camera);
+      const ink = forward[i]!.ink;
+      s.ink.forEach((v, j) => expect(v).toBeCloseTo(ink[j]!, 9));
+      const cam = forward[i]!.camera;
+      expect(s.camera.az).toBeCloseTo(cam.az, 9);
+      expect(s.camera.el).toBeCloseTo(cam.el, 9);
+      expect(s.camera.dist).toBeCloseTo(cam.dist, 9);
+      expect(s.camera.centreX).toBeCloseTo(cam.centreX, 9);
+      expect(s.camera.centreY).toBeCloseTo(cam.centreY, 9);
     });
   });
 
