@@ -83,9 +83,12 @@ export const copy = {
   },
   posters: {
     hero: 'A blank sheet of paper lying on a pale desk, seen from a low three-quarter angle.',
-    strategy: 'The sheet folded once along a horizontal hinge, with a printed grid appearing on its face.',
-    design: 'The sheet folded into a angular paper form with corners turned and type printed on the upper face.',
-    build: 'The folded sheet standing like an open laptop, with interface ink on the screen half and grid on the deck.',
+    strategy:
+      'The sheet folded once along a horizontal hinge, with a printed grid appearing on its face.',
+    design:
+      'The sheet folded into an angular paper form with corners turned and type printed on the upper face.',
+    build:
+      'The folded sheet standing like an open laptop, with interface ink on the screen half and grid on the deck.',
     launch: 'The sheet unfolded flat and filling the frame as blank paper.'
   }
 } as const;
