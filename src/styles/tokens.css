@@ -8,6 +8,10 @@
   --back: #2B2924;
   --crease: #E2400F;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-fold: cubic-bezier(0.65, 0, 0.35, 1);
+  --t-fast: 0.24s;
+  --t-mid: 0.34s;
+  --t-slow: 0.42s;
   --pad: clamp(1.25rem, 4vw, 4rem);
   --gap: clamp(0.75rem, 1.5vw, 1.5rem);
   --nav-h: 4rem;
