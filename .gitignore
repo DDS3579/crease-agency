@@ -4,5 +4,7 @@ dist
 test-results
 playwright-report
 .lighthouseci
+docs/lighthouse
+docs/playwright-results.json
 *.trace.json
 .DS_Store
