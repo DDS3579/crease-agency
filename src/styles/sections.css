@@ -18,7 +18,12 @@
   gap: var(--gap);
   align-items: start;
 }
-.work-thumb { aspect-ratio: 8 / 5; border: 1px solid var(--line); background: var(--raised); }
+.work-thumb {
+  aspect-ratio: 8 / 5;
+  border: 1px solid var(--line);
+  background: var(--raised);
+  contain: layout paint;
+}
 .work-thumb svg { width: 100%; height: 100%; }
 .work-meta { display: grid; gap: 0.6rem; }
 .work-data { color: var(--muted); }
