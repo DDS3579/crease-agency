@@ -5,205 +5,196 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Crease — Web studio in Valencia (DEMO)</title>
 <meta name="description" content="Crease is a web studio in Valencia. We shape websites from the first blank page to launch.">
-
 <meta property="og:title" content="Crease — Every website starts flat.">
 <meta property="og:description" content="Crease is a web studio in Valencia. We shape websites from the first blank page to launch.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="/og/crease-hero.avif">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="/og/crease-hero.avif">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="preload" as="image" href="/posters/hero-desktop.avif" media="(min-width: 768px)" fetchpriority="high">
 <link rel="preload" as="image" href="/posters/hero-mobile.avif" media="(max-width: 767px)" fetchpriority="high">
 <link rel="preload" as="font" href="/fonts/funnel-display-latin-wght-normal.woff2" type="font/woff2" crossorigin>
 <link rel="preload" as="font" href="/fonts/funnel-sans-latin-wght-normal.woff2" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="/src/styles/index.css">
-<script>document.documentElement.dataset.mode=(navigator.connection&&navigator.connection.saveData)||!('WebGL2RenderingContext' in window)?'stacked':'stage';</script>
+<script>document.documentElement.dataset.js='1';document.documentElement.dataset.mode=(navigator.connection&&navigator.connection.saveData)||!('WebGL2RenderingContext' in window)?'stacked':'stage';</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"ProfessionalService","name":"Crease","description":"Crease is a web studio in Valencia. We shape websites from the first blank page to launch.","address":{"@type":"PostalAddress","addressLocality":"Valencia","addressCountry":"Spain"}}</script>
 </head>
 <body>
 <a class="skip-link" href="#main">Skip to content</a>
 <header class="nav" data-nav>
-  <div class="nav-inner">
-    <a class="wordmark" href="#hero" aria-label="Crease, back to start">Crease</a>
-    <nav class="nav-links" aria-label="Primary"><a href="#process">Process</a><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a></nav>
-    <a class="btn btn-ghost nav-cta" href="#contact" data-start-project>Start a project</a>
-  </div>
+<div class="nav-inner">
+<a class="wordmark" href="#hero" aria-label="Crease, back to start">Crease</a>
+<nav class="nav-links" aria-label="Primary"><a href="#process">Process</a><a href="#services">Services</a><a href="#work">Work</a><a href="#contact">Contact</a></nav>
+<a class="btn btn-ghost nav-cta" href="#contact" data-start-project>Start a project</a>
+</div>
 </header>
 <nav class="rail" aria-label="Journey progress" data-rail>
-  <div class="rail-track" aria-hidden="true"><div class="rail-fill" data-rail-fill></div></div>
-  <ol><li><a href="#hero" data-tick="0" aria-current="step"><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Start</span></a></li><li><a href="#process" data-tick="1" ><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Strategy</span></a></li><li><a href="#design" data-tick="2" ><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Design</span></a></li><li><a href="#build" data-tick="3" ><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Build</span></a></li><li><a href="#launch" data-tick="4" ><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Launch</span></a></li></ol>
-  <p class="sr-only" aria-live="polite" data-rail-live></p>
+<div class="rail-track" aria-hidden="true"><div class="rail-fill" data-rail-fill></div></div>
+<ol><li><a href="#hero" data-tick="0" aria-current="step"><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Start</span></a></li><li><a href="#process" data-tick="1"><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Strategy</span></a></li><li><a href="#design" data-tick="2"><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Design</span></a></li><li><a href="#build" data-tick="3"><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Build</span></a></li><li><a href="#launch" data-tick="4"><span class="tick-mark" aria-hidden="true"></span><span class="sr-only">Launch</span></a></li></ol>
+<p class="sr-only" aria-live="polite" data-rail-live></p>
 </nav>
 <main id="main">
-  <div class="journey" id="journey" data-journey>
-    <div class="stage" data-stage aria-hidden="true">
-      <img class="stage-poster is-active" data-poster="hero" src="/posters/hero-desktop.avif" srcset="/posters/hero-mobile.avif 900w, /posters/hero-desktop.avif 1600w" sizes="100vw" width="1600" height="1000" alt="A blank sheet of paper lying on a pale desk, seen from a low three-quarter angle." fetchpriority="high" decoding="async" >
-<img class="stage-poster" data-poster="strategy" src="/posters/strategy-desktop.avif" srcset="/posters/strategy-mobile.avif 900w, /posters/strategy-desktop.avif 1600w" sizes="100vw" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden>
-<img class="stage-poster" data-poster="design" src="/posters/design-desktop.avif" srcset="/posters/design-mobile.avif 900w, /posters/design-desktop.avif 1600w" sizes="100vw" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden>
-<img class="stage-poster" data-poster="build" src="/posters/build-desktop.avif" srcset="/posters/build-mobile.avif 900w, /posters/build-desktop.avif 1600w" sizes="100vw" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden>
-<img class="stage-poster" data-poster="launch" src="/posters/launch-desktop.avif" srcset="/posters/launch-mobile.avif 900w, /posters/launch-desktop.avif 1600w" sizes="100vw" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden>
-    </div>
-    <section id="hero" class="panel hero panel-left" data-key="hero" aria-labelledby="hero-title">
-      <div class="panel-inner">
-        <p class="hero-label">Web studio, Valencia</p>
-        <h1 id="hero-title" class="hero-title"><span class="line"><span>Every</span></span><span class="line"><span>website</span></span><span class="line"><span>starts</span></span><span class="line"><span>flat.</span></span></h1>
-        <p class="body hero-support">Crease is a web studio in Valencia. We shape websites from the first blank page to launch.</p>
-        <div class="hero-cta">
-          <a class="btn btn-solid" href="#process">See the process</a>
-          <a class="btn btn-ghost" href="#contact" data-start-project>Start a project</a>
-        </div>
-        <p class="mono data-strip">4 stages / 3 services / 4 projects</p>
-      </div>
-    </section>
-    <section id="process" class="panel chapter panel-right " data-key="strategy" aria-labelledby="process-title">
-    <div class="panel-inner">
-      <p class="counter mono">Stage 1 of 4</p>
-      <h2 id="process-title">Find the first crease.</h2>
-      <p class="body">Before anything is drawn, we decide what the site is for. One decision, made early, shapes everything after it.</p>
-    </div>
-    <picture class="panel-poster">
-    <source media="(max-width: 767px)" srcset="/posters/strategy-mobile.avif" width="900" height="1200">
-    <img src="/posters/strategy-desktop.avif" width="1600" height="1000" alt="The sheet folded once along a horizontal hinge, with a printed grid appearing on its face." loading="lazy" decoding="async">
-  </picture>
-  </section>
-<section id="design" class="panel chapter panel-left " data-key="design" aria-labelledby="design-title">
-    <div class="panel-inner">
-      <p class="counter mono">Stage 2 of 4</p>
-      <h2 id="design-title">Fold it into form.</h2>
-      <p class="body">Structure, type and motion are shaped together, as one material, until the page has a shape of its own.</p>
-    </div>
-    <picture class="panel-poster">
-    <source media="(max-width: 767px)" srcset="/posters/design-mobile.avif" width="900" height="1200">
-    <img src="/posters/design-desktop.avif" width="1600" height="1000" alt="The sheet folded into a angular paper form with corners turned and type printed on the upper face." loading="lazy" decoding="async">
-  </picture>
-  </section>
-<section id="build" class="panel chapter panel-right " data-key="build" aria-labelledby="build-title">
-    <div class="panel-inner">
-      <p class="counter mono">Stage 3 of 4</p>
-      <h2 id="build-title">Make it stand up.</h2>
-      <p class="body">Fast, accessible and easy to edit. The flat page becomes something you can use.</p>
-    </div>
-    <picture class="panel-poster">
-    <source media="(max-width: 767px)" srcset="/posters/build-mobile.avif" width="900" height="1200">
-    <img src="/posters/build-desktop.avif" width="1600" height="1000" alt="The folded sheet standing like an open laptop, with interface ink on the screen half and grid on the deck." loading="lazy" decoding="async">
-  </picture>
-  </section>
+<div class="journey" id="journey" data-journey>
+<div class="stage" data-stage aria-hidden="true">
+<picture class="stage-picture"><source media="(max-width: 767px)" srcset="/posters/hero-mobile.avif" width="900" height="1200"><img class="stage-poster is-active" data-poster="hero" src="/posters/hero-desktop.avif" width="1600" height="1000" alt="A blank sheet of paper lying on a pale desk, seen from a low three-quarter angle." fetchpriority="high" decoding="async"></picture>
+<picture class="stage-picture"><source media="(max-width: 767px)" srcset="/posters/strategy-mobile.avif" width="900" height="1200"><img class="stage-poster" data-poster="strategy" src="/posters/strategy-desktop.avif" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden></picture>
+<picture class="stage-picture"><source media="(max-width: 767px)" srcset="/posters/design-mobile.avif" width="900" height="1200"><img class="stage-poster" data-poster="design" src="/posters/design-desktop.avif" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden></picture>
+<picture class="stage-picture"><source media="(max-width: 767px)" srcset="/posters/build-mobile.avif" width="900" height="1200"><img class="stage-poster" data-poster="build" src="/posters/build-desktop.avif" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden></picture>
+<picture class="stage-picture"><source media="(max-width: 767px)" srcset="/posters/launch-mobile.avif" width="900" height="1200"><img class="stage-poster" data-poster="launch" src="/posters/launch-desktop.avif" width="1600" height="1000" alt="" loading="lazy" decoding="async" hidden></picture>
+</div>
+<section id="hero" class="panel hero panel-left" data-key="hero" aria-labelledby="hero-title">
+<div class="panel-inner">
+<p class="hero-label">Web studio, Valencia</p>
+<h1 id="hero-title" class="hero-title"><span class="line"><span>Every</span></span><span class="line"><span>website</span></span><span class="line"><span>starts</span></span><span class="line"><span>flat.</span></span></h1>
+<p class="body hero-support">Crease is a web studio in Valencia. We shape websites from the first blank page to launch.</p>
+<div class="hero-cta">
+<a class="btn btn-solid" href="#process">See the process</a>
+<a class="btn btn-ghost" href="#contact" data-start-project>Start a project</a>
+</div>
+<p class="mono data-strip">4 stages / 3 services / 4 projects</p>
+</div>
+<picture class="panel-poster"><source media="(max-width: 767px)" srcset="/posters/hero-mobile.avif" width="900" height="1200"><img src="/posters/hero-desktop.avif" width="1600" height="1000" alt="A blank sheet of paper lying on a pale desk, seen from a low three-quarter angle." loading="lazy" decoding="async"></picture>
+</section>
+<section id="process" class="panel chapter panel-right" data-key="strategy" aria-labelledby="process-title">
+<div class="panel-inner">
+<p class="counter mono">Stage 1 of 4</p>
+<h2 id="process-title">Find the first crease.</h2>
+<p class="body">Before anything is drawn, we decide what the site is for. One decision, made early, shapes everything after it.</p>
+</div>
+<picture class="panel-poster"><source media="(max-width: 767px)" srcset="/posters/strategy-mobile.avif" width="900" height="1200"><img src="/posters/strategy-desktop.avif" width="1600" height="1000" alt="The sheet folded once along a horizontal hinge, with a printed grid appearing on its face." loading="lazy" decoding="async"></picture>
+</section>
+<section id="design" class="panel chapter panel-left" data-key="design" aria-labelledby="design-title">
+<div class="panel-inner">
+<p class="counter mono">Stage 2 of 4</p>
+<h2 id="design-title">Fold it into form.</h2>
+<p class="body">Structure, type and motion are shaped together, as one material, until the page has a shape of its own.</p>
+</div>
+<picture class="panel-poster"><source media="(max-width: 767px)" srcset="/posters/design-mobile.avif" width="900" height="1200"><img src="/posters/design-desktop.avif" width="1600" height="1000" alt="The sheet folded into an angular paper form with corners turned and type printed on the upper face." loading="lazy" decoding="async"></picture>
+</section>
+<section id="build" class="panel chapter panel-right" data-key="build" aria-labelledby="build-title">
+<div class="panel-inner">
+<p class="counter mono">Stage 3 of 4</p>
+<h2 id="build-title">Make it stand up.</h2>
+<p class="body">Fast, accessible and easy to edit. The flat page becomes something you can use.</p>
+</div>
+<picture class="panel-poster"><source media="(max-width: 767px)" srcset="/posters/build-mobile.avif" width="900" height="1200"><img src="/posters/build-desktop.avif" width="1600" height="1000" alt="The folded sheet standing like an open laptop, with interface ink on the screen half and grid on the deck." loading="lazy" decoding="async"></picture>
+</section>
 <section id="launch" class="panel chapter panel-left panel-launch" data-key="launch" aria-labelledby="launch-title">
-    <div class="panel-inner">
-      <p class="counter mono">Stage 4 of 4</p>
-      <h2 id="launch-title">Unfold it to the world.</h2>
-      <p class="body">We ship it, watch how it behaves, and keep tuning. Then it is yours to run.</p>
-    </div>
-    <picture class="panel-poster">
-    <source media="(max-width: 767px)" srcset="/posters/launch-mobile.avif" width="900" height="1200">
-    <img src="/posters/launch-desktop.avif" width="1600" height="1000" alt="The sheet unfolded flat and filling the frame as blank paper." loading="lazy" decoding="async">
-  </picture>
-  </section>
-  </div>
-  <section id="services" class="section section-paper" aria-labelledby="services-title">
-    <div class="section-inner">
-      <h2 id="services-title" class="reveal">What we make.</h2>
-      <div class="services-list"><article class="service-row" aria-labelledby="service-websites">
-    <h3 id="service-websites">Websites</h3>
-    <div class="service-detail"><p class="body">Marketing sites and storefronts that load fast and read well on every screen.</p><p class="mono stack">Static HTML / CSS / WebGL</p></div>
-  </article>
+<div class="panel-inner">
+<p class="counter mono">Stage 4 of 4</p>
+<h2 id="launch-title">Unfold it to the world.</h2>
+<p class="body">We ship it, watch how it behaves, and keep tuning. Then it is yours to run.</p>
+</div>
+<picture class="panel-poster"><source media="(max-width: 767px)" srcset="/posters/launch-mobile.avif" width="900" height="1200"><img src="/posters/launch-desktop.avif" width="1600" height="1000" alt="The sheet unfolded flat and filling the frame as blank paper." loading="lazy" decoding="async"></picture>
+</section>
+</div>
+<section id="services" class="section section-paper" aria-labelledby="services-title">
+<div class="section-inner">
+<h2 id="services-title" class="reveal">What we make.</h2>
+<div class="services-list"><article class="service-row" aria-labelledby="service-websites">
+<h3 id="service-websites">Websites</h3>
+<div class="service-detail"><p class="body">Marketing sites and storefronts that load fast and read well on every screen.</p><p class="mono stack">Static HTML / CSS / WebGL</p></div>
+</article>
 <article class="service-row" aria-labelledby="service-web-apps">
-    <h3 id="service-web-apps">Web apps</h3>
-    <div class="service-detail"><p class="body">Dashboards, booking flows and tools, built with the same care as the front page.</p><p class="mono stack">TypeScript / APIs / Design systems</p></div>
-  </article>
+<h3 id="service-web-apps">Web apps</h3>
+<div class="service-detail"><p class="body">Dashboards, booking flows and tools, built with the same care as the front page.</p><p class="mono stack">TypeScript / APIs / Design systems</p></div>
+</article>
 <article class="service-row" aria-labelledby="service-brand-motion">
-    <h3 id="service-brand-motion">Brand and motion</h3>
-    <div class="service-detail"><p class="body">Identity systems and motion that carry from the logo to the interface.</p><p class="mono stack">Identity / Motion / Guidelines</p></div>
-  </article></div>
-    </div>
-  </section>
-  <section id="work" class="section section-paper" aria-labelledby="work-title">
-    <div class="section-inner">
-      <div class="work-heading reveal"><h2 id="work-title">Selected work</h2><p class="mono demo-note">DEMO</p></div>
-      <div class="work-list"><article class="work-row work-row-1" aria-labelledby="work-almada">
-    <div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="28.80000000000001" y1="150" x2="451.2" y2="150" stroke="#14130F" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="6 5"/><line x1="28.80000000000001" y1="113.03999999999999" x2="123.84" y2="18" stroke="#14130F" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="6 5"/><path d="M 28.80000000000001 113.03999999999999 L 28.80000000000001 18 L 123.84 18" fill="none" stroke="#14130F" stroke-opacity="0.35" stroke-width="1"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><path d="M 356.15999999999997 18 L 451.2 18 L 451.2 113.03999999999999" fill="none" stroke="#14130F" stroke-opacity="0.35" stroke-width="1"/><line x1="451.2" y1="242.928" x2="28.80000000000001" y2="242.928" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><circle cx="356.08250550270077" cy="166.9011214211583" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="297.51654853105543" cy="111.66116239875555" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="125.38230553150176" cy="217.89772212803365" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="164.34186176776888" cy="171.9822058260441" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
-    <div class="work-meta">
-      <h3 id="work-almada">Almada Ceramics</h3>
-      <p class="mono work-data">online store · <time datetime="2025">2025</time></p>
-      <p class="body">A quiet storefront for hand-thrown ceramics, organised around the object rather than the catalogue.</p>
-      <p class="mono stack">Storefront / CMS / Checkout</p>
-    </div>
-  </article>
+<h3 id="service-brand-motion">Brand and motion</h3>
+<div class="service-detail"><p class="body">Identity systems and motion that carry from the logo to the interface.</p><p class="mono stack">Identity / Motion / Guidelines</p></div>
+</article></div>
+</div>
+</section>
+<section id="work" class="section section-paper" aria-labelledby="work-title">
+<div class="section-inner">
+<div class="work-heading reveal"><h2 id="work-title">Selected work</h2><p class="mono demo-note">DEMO</p></div>
+<div class="work-list"><article class="work-row work-row-1" aria-labelledby="work-almada">
+<div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="28.80000000000001" y1="150" x2="451.2" y2="150" stroke="#14130F" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="6 5"/><line x1="28.80000000000001" y1="113.03999999999999" x2="123.84" y2="18" stroke="#14130F" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="6 5"/><path d="M 28.80000000000001 113.03999999999999 L 28.80000000000001 18 L 123.84 18" fill="none" stroke="#14130F" stroke-opacity="0.35" stroke-width="1"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><path d="M 356.15999999999997 18 L 451.2 18 L 451.2 113.03999999999999" fill="none" stroke="#14130F" stroke-opacity="0.35" stroke-width="1"/><line x1="451.2" y1="242.928" x2="28.80000000000001" y2="242.928" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><circle cx="356.08250550270077" cy="166.9011214211583" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="297.51654853105543" cy="111.66116239875555" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="125.38230553150176" cy="217.89772212803365" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="164.34186176776888" cy="171.9822058260441" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
+<div class="work-meta">
+<h3 id="work-almada">Almada Ceramics</h3>
+<p class="mono work-data">online store · <time datetime="2025">2025</time></p>
+<p class="body">A quiet storefront for hand-thrown ceramics, organised around the object rather than the catalogue.</p>
+<p class="mono stack">Storefront / CMS / Checkout</p>
+</div>
+</article>
 <article class="work-row work-row-2" aria-labelledby="work-seis">
-    <div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><circle cx="393.2244022607803" cy="81.1401560023427" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="74.0596354365349" cy="105.92564696967602" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="141.5750046443939" cy="237.3847339823842" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="404.0460459923744" cy="78.3075538650155" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
-    <div class="work-meta">
-      <h3 id="work-seis">Seis Radio</h3>
-      <p class="mono work-data">streaming site · <time datetime="2025">2025</time></p>
-      <p class="body">A listening room for a community radio station, with the player kept one thumb away.</p>
-      <p class="mono stack">Audio / Schedule / Archive</p>
-    </div>
-  </article>
+<div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><circle cx="393.2244022607803" cy="81.1401560023427" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="74.0596354365349" cy="105.92564696967602" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="141.5750046443939" cy="237.3847339823842" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="404.0460459923744" cy="78.3075538650155" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
+<div class="work-meta">
+<h3 id="work-seis">Seis Radio</h3>
+<p class="mono work-data">streaming site · <time datetime="2025">2025</time></p>
+<p class="body">A listening room for a community radio station, with the player kept one thumb away.</p>
+<p class="mono stack">Audio / Schedule / Archive</p>
+</div>
+</article>
 <article class="work-row work-row-3" aria-labelledby="work-cinder">
-    <div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="28.80000000000001" y1="150" x2="451.2" y2="150" stroke="#14130F" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="6 5"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><path d="M 356.15999999999997 18 L 451.2 18 L 451.2 113.03999999999999" fill="none" stroke="#14130F" stroke-opacity="0.35" stroke-width="1"/><circle cx="286.9911385846138" cy="150.77825324088334" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="273.680059697628" cy="87.70671135485173" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="146.30925551891326" cy="98.31798560768365" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="384.0142160010338" cy="69.18251108229161" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="395.9094443106651" cy="207.6295185059309" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
-    <div class="work-meta">
-      <h3 id="work-cinder">Cinder Bakery</h3>
-      <p class="mono work-data">ordering site · <time datetime="2024">2024</time></p>
-      <p class="body">A morning-first ordering flow for a neighbourhood bakery, from loaf to pickup slot.</p>
-      <p class="mono stack">Ordering / Menu / Pickup</p>
-    </div>
-  </article>
+<div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="28.80000000000001" y1="150" x2="451.2" y2="150" stroke="#14130F" stroke-opacity="0.7" stroke-width="1" stroke-dasharray="6 5"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><path d="M 356.15999999999997 18 L 451.2 18 L 451.2 113.03999999999999" fill="none" stroke="#14130F" stroke-opacity="0.35" stroke-width="1"/><circle cx="286.9911385846138" cy="150.77825324088334" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="273.680059697628" cy="87.70671135485173" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="146.30925551891326" cy="98.31798560768365" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="384.0142160010338" cy="69.18251108229161" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="395.9094443106651" cy="207.6295185059309" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
+<div class="work-meta">
+<h3 id="work-cinder">Cinder Bakery</h3>
+<p class="mono work-data">ordering site · <time datetime="2024">2024</time></p>
+<p class="body">A morning-first ordering flow for a neighbourhood bakery, from loaf to pickup slot.</p>
+<p class="mono stack">Ordering / Menu / Pickup</p>
+</div>
+</article>
 <article class="work-row work-row-4" aria-labelledby="work-orla">
-    <div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><line x1="451.2" y1="242.928" x2="28.80000000000001" y2="242.928" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><circle cx="381.76491853952405" cy="52.1330591082573" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="177.68272024869918" cy="48.72419748902321" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="293.21292966127396" cy="237.46930987536905" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
-    <div class="work-meta">
-      <h3 id="work-orla">Orla Dental</h3>
-      <p class="mono work-data">clinic website · <time datetime="2024">2024</time></p>
-      <p class="body">A calm clinic site that makes booking, directions and aftercare easy to find.</p>
-      <p class="mono stack">Booking / Content / Forms</p>
-    </div>
-  </article></div>
-    </div>
-  </section>
-  <section id="contact" class="section section-paper" aria-labelledby="contact-title">
-    <div class="section-inner contact-grid">
-      <div class="contact-intro reveal">
-        <h2 id="contact-title">Start with a blank page.</h2>
-        <p class="body">Tell us what you want to make. We will write back.</p>
-        
-        
-      </div>
-      <form class="contact-form reveal" data-contact-form data-endpoint="" data-mailto="" novalidate>
-        <div class="field">
-          <label for="f-name">Name</label>
-          <input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
-          <p class="field-error" id="f-name-error" hidden></p>
-        </div>
-        <div class="field">
-          <label for="f-email">Email</label>
-          <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-error">
-          <p class="field-error" id="f-email-error" hidden></p>
-        </div>
-        <div class="field">
-          <label for="f-type">Project type</label>
-          <select id="f-type" name="type" required aria-describedby="f-type-error"><option value="" selected disabled>Project type</option><option value="websites">Websites</option><option value="web-apps">Web apps</option><option value="brand-motion">Brand and motion</option><option value="not-sure">Not sure</option></select>
-          <p class="field-error" id="f-type-error" hidden></p>
-        </div>
-        <div class="field">
-          <label for="f-message">Message</label>
-          <textarea id="f-message" name="message" rows="5" required aria-describedby="f-message-error"></textarea>
-          <p class="field-error" id="f-message-error" hidden></p>
-        </div>
-        <div class="hp" aria-hidden="true">
-          <label for="f-company">Company</label>
-          <input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
-        </div>
-        <button class="btn btn-solid" type="submit" data-submit>Start a project</button>
-        <p class="form-status" role="status" aria-live="polite" data-form-status></p>
-      </form>
-    </div>
-  </section>
+<div class="work-thumb" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 300" width="480" height="300" fill="none"><rect x="28.80000000000001" y="18" width="422.4" height="264" fill="none" stroke="#14130F" stroke-opacity="0.55" stroke-width="1"/><line x1="356.15999999999997" y1="18" x2="451.2" y2="113.03999999999999" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><line x1="451.2" y1="242.928" x2="28.80000000000001" y2="242.928" stroke="#14130F" stroke-opacity="0.7" stroke-width="1"/><circle cx="381.76491853952405" cy="52.1330591082573" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="177.68272024869918" cy="48.72419748902321" r="1.5" fill="#14130F" fill-opacity="0.5"/><circle cx="293.21292966127396" cy="237.46930987536905" r="1.5" fill="#14130F" fill-opacity="0.5"/></svg></div>
+<div class="work-meta">
+<h3 id="work-orla">Orla Dental</h3>
+<p class="mono work-data">clinic website · <time datetime="2024">2024</time></p>
+<p class="body">A calm clinic site that makes booking, directions and aftercare easy to find.</p>
+<p class="mono stack">Booking / Content / Forms</p>
+</div>
+</article></div>
+</div>
+</section>
+<section id="contact" class="section section-paper" aria-labelledby="contact-title">
+<div class="section-inner contact-grid">
+<div class="contact-intro reveal">
+<h2 id="contact-title">Start with a blank page.</h2>
+<p class="body">Tell us what you want to make. We will write back.</p>
+
+
+</div>
+<form class="contact-form reveal" data-contact-form data-endpoint="" data-mailto="" novalidate>
+<div class="field">
+<label for="f-name">Name</label>
+<input id="f-name" name="name" type="text" autocomplete="name" required aria-describedby="f-name-error">
+<p class="field-error" id="f-name-error" hidden></p>
+</div>
+<div class="field">
+<label for="f-email">Email</label>
+<input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-error">
+<p class="field-error" id="f-email-error" hidden></p>
+</div>
+<div class="field">
+<label for="f-type">Project type</label>
+<select id="f-type" name="type" required aria-describedby="f-type-error"><option value="" selected disabled>Project type</option><option value="websites">Websites</option><option value="web-apps">Web apps</option><option value="brand-motion">Brand and motion</option><option value="not-sure">Not sure</option></select>
+<p class="field-error" id="f-type-error" hidden></p>
+</div>
+<div class="field">
+<label for="f-message">Message</label>
+<textarea id="f-message" name="message" rows="5" required aria-describedby="f-message-error"></textarea>
+<p class="field-error" id="f-message-error" hidden></p>
+</div>
+<div class="hp" aria-hidden="true">
+<label for="f-company">Company</label>
+<input id="f-company" name="company" type="text" tabindex="-1" autocomplete="off">
+</div>
+<button class="btn btn-solid" type="submit" data-submit>Start a project</button>
+<p class="form-status" role="status" aria-live="polite" data-form-status></p>
+</form>
+</div>
+</section>
 </main>
 <footer class="footer section-paper">
-  <div class="section-inner footer-inner">
-    <p>© Crease (DEMO)</p>
-    <p>Valencia, Spain</p>
-    <p>Built with Vite and WebGL2</p>
-    <a href="#hero">Back to top</a>
-  </div>
+<div class="section-inner footer-inner">
+<p>© Crease (DEMO)</p>
+<p>Valencia, Spain</p>
+<p>Built with Vite and WebGL2</p>
+<a href="#hero">Back to top</a>
+</div>
 </footer>
 <script type="module" src="/src/main.ts"></script>
 </body>
