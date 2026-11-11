@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
 import {
-  clamp, clamp01, cross3, degToRad, dot3, easeInOutCubic, leftNormal2, lerp,
-  mulberry32, norm2, normalize3, radToDeg, rotateAboutAxis, shortestArcDeg
+  clamp, clamp01, cross3, degToRad, dot3, easeInOutCubic, easeInOutQuart,
+  easeInOutQuint, easeOutCubic, leftNormal2, lerp, mulberry32, norm2, normalize3,
+  radToDeg, rotateAboutAxis, shortestArcDeg, smoothstep
 } from '../../src/lib/math';
 
 const close = (a: number, b: number, tol = 1e-12): void => expect(Math.abs(a - b)).toBeLessThan(tol);
@@ -19,18 +20,51 @@ describe('scalar helpers', () => {
     close(radToDeg(Math.PI / 2), 90);
   });
 
-  it('eases in and out with fixed endpoints and midpoint', () => {
-    expect(easeInOutCubic(0)).toBe(0);
-    expect(easeInOutCubic(1)).toBe(1);
-    expect(easeInOutCubic(0.5)).toBe(0.5);
-    expect(easeInOutCubic(-1)).toBe(0);
-    expect(easeInOutCubic(2)).toBe(1);
-    let prev = 0;
-    for (let i = 1; i <= 100; i++) {
-      const v = easeInOutCubic(i / 100);
-      expect(v).toBeGreaterThanOrEqual(prev);
-      prev = v;
+});
+
+describe('fold-choreography easings', () => {
+  it.each([easeOutCubic, easeInOutQuart, easeInOutQuint] as const)(
+    'clamps and keeps fixed endpoints: %s',
+    (ease) => {
+      expect(ease(-1)).toBe(0);
+      expect(ease(0)).toBe(0);
+      expect(ease(1)).toBe(1);
+      expect(ease(2)).toBe(1);
+      let prev = 0;
+      for (let i = 1; i <= 100; i++) {
+        const v = ease(i / 100);
+        expect(v).toBeGreaterThanOrEqual(prev);
+        prev = v;
+      }
     }
+  );
+
+  it('eases out fast at the start and slow at the end', () => {
+    expect(easeOutCubic(0.25)).toBeCloseTo(1 - Math.pow(0.75, 3), 12);
+    expect(easeOutCubic(0.25)).toBeGreaterThan(0.5);
+    expect(easeOutCubic(0.75)).toBeCloseTo(1 - Math.pow(0.25, 3), 12);
+  });
+
+  it('matches the closed forms of the symmetric quart and quint', () => {
+    expect(easeInOutQuart(0.25)).toBeCloseTo(8 * Math.pow(0.25, 4), 12);
+    expect(easeInOutQuart(0.75)).toBeCloseTo(1 - Math.pow(-2 * 0.75 + 2, 4) / 2, 12);
+    expect(easeInOutQuint(0.25)).toBeCloseTo(16 * Math.pow(0.25, 5), 12);
+    expect(easeInOutQuint(0.75)).toBeCloseTo(1 - Math.pow(-2 * 0.75 + 2, 5) / 2, 12);
+  });
+
+  it('smoothsteps between two edges and clamps outside them', () => {
+    expect(smoothstep(0.6, 0.86, 0.6)).toBe(0);
+    expect(smoothstep(0.6, 0.86, 0.86)).toBe(1);
+    expect(smoothstep(0.6, 0.86, 0.5)).toBe(0);
+    expect(smoothstep(0.6, 0.86, 0.9)).toBe(1);
+    const t = (0.73 - 0.6) / 0.26;
+    expect(smoothstep(0.6, 0.86, 0.73)).toBeCloseTo(t * t * (3 - 2 * t), 12);
+  });
+
+  it('keeps a unit edge pair and a reversed pair well-defined', () => {
+    expect(smoothstep(0, 1, 0.5)).toBe(0.5);
+    expect(smoothstep(1, 0, 0.5)).toBe(0.5);
+    expect(smoothstep(2, 2, 0.5)).toBe(0);
   });
 });
 
