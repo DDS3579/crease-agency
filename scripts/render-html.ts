@@ -261,22 +261,22 @@ if (domain) {
 const connectSrc = endpoint ? `'self' ${endpoint}` : "'self'";
 const csp = `default-src 'self'; script-src 'self' '${sha(MODE_SCRIPT)}' '${sha(jsonLd)}'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src ${connectSrc}; form-action 'self' mailto:; base-uri 'self'; object-src 'none'`;
 const headers = `/*
-Content-Security-Policy: ${csp}
-X-Content-Type-Options: nosniff
-Referrer-Policy: strict-origin-when-cross-origin
-Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Content-Security-Policy: ${csp}
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 /assets/*
-Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, immutable
 
 /fonts/*
-Cache-Control: public, max-age=31536000, immutable
+  Cache-Control: public, max-age=31536000, immutable
 
 /posters/*
-Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=86400
 
 /og/*
-Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=86400
 `;
 writeFileSync(join(root, '_headers'), headers);
 writeFileSync(join(pub, '_headers'), headers);
