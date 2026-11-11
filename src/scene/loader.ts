@@ -1,39 +1,31 @@
 import { $, $$, debounce } from '../lib/dom';
 import { clamp01 } from '../lib/math';
-import { PerfRecorder, p75 } from '../lib/perf';
 import { Spring } from '../lib/spring';
 import { nextLadderLevel, type Capabilities, type LadderLevel } from '../lib/tier';
 import type { Ticker } from '../lib/ticker';
 import type { Rail } from '../ui/rail';
-import { applyFoldsFull, createFoldState } from '../content/folds';
+import { applyFolds, createFoldState } from '../content/folds';
 import {
-  FOLD_IDS,
-  defaultGeometry,
-  keyframeState,
-  keyframes,
-  stateAt,
-  type JourneyGeometry,
-  type StageKey
+  FOLD_IDS, defaultGeometry, keyframeState, keyframes, stateAt,
+  type JourneyGeometry, type StageKey
 } from '../content/journey';
-import { SceneRenderer, type SamplePoint } from './renderer';
-import { publishDebug, type CreaseDebug } from './debug';
-import { POSTER_KEYS, createPosterSwap, setPosterActive, type PosterSwap } from './poster-mode';
+import { copy } from '../content/demo/copy';
+import { SceneRenderer } from './renderer';
+import { publishDebug, type CreaseDebug, type SamplePoint } from './debug';
 
-export interface LoadOptions {
-  ticker: Ticker;
-  rail: Rail;
-  caps: Capabilities;
-}
+export interface LoadOptions { ticker: Ticker; rail: Rail; caps: Capabilities }
+interface GeometryCache extends JourneyGeometry { scrollRange: number; journeyTop: number }
 
-interface GeometryCache extends JourneyGeometry {
-  scrollRange: number;
-  journeyTop: number;
-}
-
-/** Launch panel yields to the covering sheet only at the very end of the unfold. */
+const POSTER_KEYS: readonly StageKey[] = ['hero', 'strategy', 'design', 'build', 'launch'];
+const POSTER_ALTS: readonly string[] = POSTER_KEYS.map((k) => copy.posters[k]);
 const LAUNCH_PANEL_YIELD = 0.97;
-/** Canvas hands over to the launch poster (identical paper) once the sheet covers. */
 const LAUNCH_HANDOFF = 0.995;
+
+function p75(values: readonly number[]): number {
+  if (values.length === 0) return 0;
+  const s = [...values].sort((a, b) => a - b);
+  return s[Math.min(s.length - 1, Math.floor(s.length * 0.75))] ?? 0;
+}
 
 export async function loadScene(opts: LoadOptions): Promise<void> {
   const { ticker, rail, caps } = opts;
@@ -49,13 +41,12 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
 
   let renderer: SceneRenderer | null = null;
   let canvas: HTMLCanvasElement | null = null;
-  let posterSwap: PosterSwap | null = null;
-  // Tier B starts one rung from the bottom: A1 and A2 are identical for B.
+  let posterSwap = false;
   let ladder: LadderLevel = caps.tier === 'A' ? 'A0' : 'A2';
   let disposed = false;
   let contextLost = false;
 
-  const spring = new Spring(120, 30);
+  const spring = new Spring(160, 25.3);
   let targetP = 0;
   let currentP = 0;
 
@@ -70,16 +61,15 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
   let curlCorner: 'tl' | 'tr' | 'bl' | 'br' = 'tl';
 
   let geometry: GeometryCache = { ...defaultGeometry, scrollRange: 1, journeyTop: 0 };
-  // Cached stage box: the frame loop and pointer handler never read layout.
+  // Cached stage box. The frame loop and pointer handler never read layout.
   let box = { left: 0, top: 0, width: 1, height: 1 };
   let aspect = 1.6;
   let portrait = false;
 
   let shownPoster = 0;
   let launchDone = false;
-
   const frameSamples: number[] = [];
-  const perf = new PerfRecorder();
+  const perfDeltas: number[] = [];
   const cleanups: (() => void)[] = [];
 
   const measure = (): void => {
@@ -118,6 +108,16 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     ticker.request();
   };
 
+  const setPosterActive = (index: number, revealAll: boolean, withAlts: boolean): void => {
+    $$('.stage-poster', stage).forEach((node, i) => {
+      const img = node as HTMLImageElement;
+      const active = i === index;
+      img.hidden = revealAll ? false : !active;
+      img.classList.toggle('is-active', active);
+      if (withAlts) img.alt = POSTER_ALTS[i] ?? '';
+    });
+  };
+
   const setLaunchDone = (value: boolean): void => {
     if (value === launchDone) return;
     launchDone = value;
@@ -128,17 +128,47 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
   const showPoster = (index: number): void => {
     if (index === shownPoster) return;
     shownPoster = index;
-    setPosterActive(stage, index);
+    setPosterActive(index, false, false);
   };
 
   const enterPosterSwap = (): void => {
     if (posterSwap || disposed) return;
+    posterSwap = true;
     renderer?.dispose();
     renderer = null;
     canvas?.remove();
     canvas = null;
-    posterSwap = createPosterSwap({ stage, rail, geometry: () => geometry, debug: debugOn });
-    cleanups.push(() => posterSwap?.dispose());
+    document.body.dataset.posterSwap = 'true';
+    document.body.dataset.sceneReady = 'false';
+    delete document.body.dataset.launchDone;
+    stage.setAttribute('aria-hidden', 'false');
+    setPosterActive(0, true, true);
+
+    let last = -1;
+    const update = (): void => {
+      const p = clamp01((window.scrollY - geometry.journeyTop) / geometry.scrollRange);
+      const idx = Math.min(POSTER_KEYS.length - 1, Math.round(p * (POSTER_KEYS.length - 1)));
+      if (idx !== last) {
+        last = idx;
+        setPosterActive(idx, true, true);
+      }
+      rail.update(p, idx);
+      rail.setLaunch(p > LAUNCH_HANDOFF);
+      if (debugOn) {
+        const state = keyframeState(POSTER_KEYS[idx] ?? 'hero', aspect, portrait);
+        publishDebug(state, { renders: 0, drawCalls: 0, triangles: 0, textureCount: 0, gpuMemoryMB: 0 },
+          'poster', 'poster', new Float32Array(8), caps, false);
+        window.__crease!.P = p;
+        window.__crease!.stage = idx;
+      }
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update, { passive: true });
+    cleanups.push(() => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    });
+    update();
   };
 
   const createRenderer = (): void => {
@@ -152,28 +182,21 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     renderer.glowEnabled = !caps.reducedMotion;
     renderer.resize(box.width, box.height);
 
-    void renderer
-      .loadPrint()
-      .then(() => {
-        needsRender = true;
-        ticker.request();
-        if (posterKey) finishPoster();
-      })
-      .catch(() => {
-        /* blank sheet is a valid state; the print simply never arrives */
-      });
+    void renderer.loadPrint().then(() => {
+      needsRender = true;
+      ticker.request();
+      if (posterKey) finishPoster();
+    }).catch(() => { /* a blank sheet is a valid state */ });
 
     canvas.addEventListener('webglcontextlost', (e) => {
       e.preventDefault();
       contextLost = true;
-      const ext = renderer?.loseExtension ?? null;
+      // Capture the extension while the context is alive: getExtension returns
+      // null once lost.
+      const ext = renderer?.gl.getExtension('WEBGL_lose_context') ?? null;
       setTimeout(() => {
         if (disposed || !contextLost) return;
-        try {
-          ext?.restoreContext();
-        } catch {
-          enterPosterSwap();
-        }
+        try { ext?.restoreContext(); } catch { enterPosterSwap(); }
       }, 100);
       setTimeout(() => {
         if (disposed || !contextLost) return;
@@ -189,9 +212,7 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
         createRenderer();
         needsRender = true;
         ticker.request();
-      } catch {
-        enterPosterSwap();
-      }
+      } catch { enterPosterSwap(); }
     });
   };
 
@@ -207,7 +228,7 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     if (window.__crease) window.__crease.posterReady = true;
   };
 
-  // ---- boot -------------------------------------------------------------
+  // ---- boot ---------------------------------------------------------------
   const sr = stage.getBoundingClientRect();
   box = { left: sr.left, top: sr.top, width: sr.width, height: sr.height };
   aspect = box.width / Math.max(1, box.height);
@@ -218,6 +239,7 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
   } catch {
     measure();
     enterPosterSwap();
+    if (debugOn) exposeDebug();
     return;
   }
 
@@ -247,10 +269,7 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     let bestD = Infinity;
     geometry.keyP.forEach((k, i) => {
       const d = Math.abs(p - k);
-      if (d < bestD) {
-        bestD = d;
-        best = i;
-      }
+      if (d < bestD) { bestD = d; best = i; }
     });
     return best;
   };
@@ -264,10 +283,9 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
   cleanups.push(() => window.removeEventListener('scroll', onScroll));
   onScroll();
 
-  let io: IntersectionObserver | null = null;
   if (caps.reducedMotion) {
     const panels = $$('.panel', journey);
-    io = new IntersectionObserver(
+    const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
           if (!e.isIntersecting) continue;
@@ -282,19 +300,17 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
       },
       { threshold: 0.35 }
     );
-    panels.forEach((p) => io!.observe(p));
-    cleanups.push(() => io?.disconnect());
+    panels.forEach((p) => io.observe(p));
+    cleanups.push(() => io.disconnect());
   }
 
   if (caps.tier === 'A' && caps.finePointer && !caps.reducedMotion) {
+    // Cached box: no getBoundingClientRect per pointer event.
     const onPointer = (e: PointerEvent): void => {
       pointer = { x: e.clientX - box.left, y: e.clientY - box.top };
       ticker.request();
     };
-    const onLeave = (): void => {
-      pointer = null;
-      ticker.request();
-    };
+    const onLeave = (): void => { pointer = null; ticker.request(); };
     window.addEventListener('pointermove', onPointer, { passive: true });
     window.addEventListener('pointerleave', onLeave, { passive: true });
     window.addEventListener('blur', onLeave);
@@ -305,7 +321,7 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     });
   }
 
-  // ---- frame ------------------------------------------------------------
+  // ---- frame --------------------------------------------------------------
   const tick = (dt: number): boolean => {
     if (disposed || !renderer || posterSwap) return false;
 
@@ -327,16 +343,14 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     let targetAngle = 0;
     if (curlEnabled && flatHero && pointer) {
       const t = renderer.curlTarget(pointer.x, pointer.y, state);
-      if (t) {
-        curlCorner = t.corner;
-        targetAngle = t.angle;
-      }
+      if (t) { curlCorner = t.corner; targetAngle = t.angle; }
     }
     const prevCurl = curlAngle;
     curlAngle += (targetAngle - curlAngle) * 0.08;
     if (Math.abs(curlAngle) < 0.005) curlAngle = 0;
     const curlAnimating = Math.abs(curlAngle - prevCurl) > 0.002;
 
+    // Change gate: idle means zero renders.
     const pChanged = Math.abs(currentP - lastRenderedP) > 1e-5;
     const curlChanged =
       Math.abs(curlAngle - lastRenderedCurl) > 0.002 ||
@@ -354,15 +368,12 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
       lastRenderedCorner = curlCorner;
       needsRender = false;
       if (debugOn) {
-        publishDebug(
-          state, renderer.stats, caps.tier, ladder, renderer.activity, caps, renderer.printLoaded
-        );
+        publishDebug(state, renderer.stats, caps.tier, ladder, renderer.activity, caps, renderer.printLoaded);
       }
     }
 
     rail.update(currentP, state.stage);
     rail.setLaunch(currentP > LAUNCH_PANEL_YIELD);
-
     showPoster(state.stage === keyframes.length - 1 ? keyframes.length - 1 : 0);
     setLaunchDone(currentP > LAUNCH_HANDOFF);
 
@@ -374,10 +385,7 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
         const next = nextLadderLevel(ladder, value);
         if (next !== ladder) {
           ladder = next;
-          if (next === 'poster') {
-            enterPosterSwap();
-            return false;
-          }
+          if (next === 'poster') { enterPosterSwap(); return false; }
           renderer.setLevel(next);
           needsRender = true;
         }
@@ -387,13 +395,20 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
     return moving || curlAnimating || activityAlive || needsRender;
   };
 
-  const removeTick = ticker.add(tick, 10);
-  cleanups.push(removeTick);
+  cleanups.push(ticker.add(tick, 10));
 
   ticker.onFrame = (dt) => {
     if (!perfOn) return;
-    perf.push(dt * 1000);
-    window.__perf = perf.summary(ladder);
+    perfDeltas.push(dt * 1000);
+    if (perfDeltas.length > 240) perfDeltas.shift();
+    const s = [...perfDeltas].sort((a, b) => a - b);
+    window.__perf = {
+      p50: s[Math.floor(s.length * 0.5)] ?? 0,
+      p95: s[Math.floor(s.length * 0.95)] ?? 0,
+      dropped: perfDeltas.filter((d) => d > 20).length,
+      level: ladder,
+      frames: perfDeltas.length
+    };
   };
 
   ticker.request();
@@ -408,26 +423,32 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
         needsRender = true;
         ticker.request();
       },
-      forceRender() {
-        needsRender = true;
-        ticker.request();
-      },
+      forceRender() { needsRender = true; ticker.request(); },
       samplePixels(points: SamplePoint[]) {
         if (!renderer) throw new Error('no renderer');
         const state = stateAt(currentP, { aspect, portrait, geometry });
-        return renderer.samplePixels(state, points);
+        renderer.render(state, null, 0);
+        const gl = renderer.gl;
+        const sx = renderer.canvas.width / Math.max(1, box.width);
+        const sy = renderer.canvas.height / Math.max(1, box.height);
+        const px = new Uint8Array(4);
+        return points.map((p) => {
+          const x = Math.min(renderer!.canvas.width - 1, Math.max(0, Math.round(p.x * sx)));
+          const y = Math.min(renderer!.canvas.height - 1, Math.max(0,
+            renderer!.canvas.height - 1 - Math.round(p.y * sy)));
+          gl.readPixels(x, y, 1, 1, gl.RGBA, gl.UNSIGNED_BYTE, px);
+          return [px[0]!, px[1]!, px[2]!, px[3]!];
+        });
       },
       gpuParity(points, key) {
         if (!renderer) throw new Error('no renderer');
         const state = keyframeState(key as StageKey, aspect, portrait);
         const gpu = renderer.gpuParity(points, state);
         const foldState = createFoldState(state.folds);
-        // The CPU reference must use the tier's band width, not the default.
-        const bendHalf = renderer.bendHalf;
         const cpu: number[] = [];
         let maxError = 0;
         points.forEach((p, i) => {
-          const c = applyFoldsFull(p, foldState, bendHalf).position;
+          const c = applyFolds(p, foldState);
           cpu.push(c[0], c[1], c[2]);
           for (let j = 0; j < 3; j++) {
             maxError = Math.max(maxError, Math.abs(c[j]! - gpu[i * 3 + j]!));
@@ -453,10 +474,6 @@ export async function loadScene(opts: LoadOptions): Promise<void> {
   if (debugOn) exposeDebug();
 
   requestAnimationFrame(() => {
-    if (renderer && !posterSwap && !disposed) {
-      document.body.dataset.sceneReady = 'true';
-    }
+    if (renderer && !posterSwap && !disposed) document.body.dataset.sceneReady = 'true';
   });
 }
-
-export { POSTER_KEYS };
