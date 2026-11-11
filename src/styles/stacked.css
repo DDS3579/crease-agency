@@ -1,11 +1,34 @@
-[data-mode="stacked"] .stage, [data-mode="stacked"] .rail { display: none; }
-[data-mode="stacked"] .panel { min-height: 80svh; align-items: start; padding-block: calc(var(--nav-h) + 2rem) 2rem; }
-[data-mode="stacked"] .panel-inner { position: static; grid-column: 1 / -1 !important; padding-block: 0; }
-[data-mode="stacked"] .panel-poster { display: block; grid-column: 1 / -1; margin-top: 1.5rem; border: 1px solid var(--line); }
+/* No JS, saveData, or no WebGL2 API: complete, readable, art-directed blocks. */
+[data-mode="stacked"] .stage,
+[data-mode="stacked"] .rail { display: none; }
+
+[data-mode="stacked"] .panel {
+  min-height: 80svh;
+  align-items: start;
+  padding-block: calc(var(--nav-h) + 2rem) 2rem;
+}
+[data-mode="stacked"] .panel-inner {
+  position: static;
+  grid-column: 1 / -1 !important;
+  padding-block: 0;
+}
+[data-mode="stacked"] .panel-poster {
+  display: block;
+  grid-column: 1 / -1;
+  margin-top: 1.5rem;
+  border: 1px solid var(--line);
+}
 [data-mode="stacked"] .panel-poster img { width: 100%; height: auto; }
-[data-mode="stacked"] .chapter { min-height: 80svh; }
+[data-mode="stacked"] .chapter,
 [data-mode="stacked"] .hero { min-height: 80svh; }
+[data-mode="stacked"] .panel-launch { opacity: 1; pointer-events: auto; }
+
 @media (min-width: 768px) {
   [data-mode="stacked"] .panel-inner { grid-column: 1 / 7 !important; }
-  [data-mode="stacked"] .panel-poster { grid-column: 7 / 13; grid-row: 1; margin-top: 0; align-self: center; }
+  [data-mode="stacked"] .panel-poster {
+    grid-column: 7 / 13;
+    grid-row: 1;
+    margin-top: 0;
+    align-self: center;
+  }
 }
