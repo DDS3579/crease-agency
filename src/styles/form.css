@@ -1,12 +1,31 @@
 .contact-form { grid-column: 8 / 13; display: grid; gap: 1.1rem; }
 .field { display: grid; gap: 0.35rem; }
 .field label { font-size: 0.875rem; font-weight: 600; }
-.field input, .field select, .field textarea { width: 100%; min-height: 44px; padding: 0.65rem 0.75rem; background: var(--raised); border: 1px solid var(--line); border-radius: 0; }
+
+.field input,
+.field select,
+.field textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 0.75rem;
+  background: var(--raised);
+  border: 1px solid var(--line);
+  border-radius: 0;
+}
 .field textarea { resize: vertical; min-height: 8rem; }
-.field input[aria-invalid="true"], .field select[aria-invalid="true"], .field textarea[aria-invalid="true"] { border-color: var(--ink); border-width: 2px; }
+
+.field input[aria-invalid="true"],
+.field select[aria-invalid="true"],
+.field textarea[aria-invalid="true"] { border-color: var(--ink); border-width: 2px; }
+
 .field-error { font-size: 0.8125rem; font-weight: 600; color: var(--ink); }
+
+/* Off-screen rather than display:none, so bots still fill it. */
 .hp { position: absolute; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
+
 .form-status { min-height: 1.5rem; font-size: 0.9375rem; font-weight: 600; }
+.contact-form[aria-busy="true"] { cursor: progress; }
+
 @media (max-width: 767px) {
   .contact-form { grid-column: 1 / -1; }
 }
