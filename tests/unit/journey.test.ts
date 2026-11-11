@@ -1,9 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import {
-  CAMERA_FOV_DEG, FOLD_IDS, coverDistance, defaultGeometry, fitDistance,
-  keyframeState, keyframes, rampFoldValue, stateAt
+  CAMERA_FOV_DEG, FOLD_IDS, coverDistance, defaultGeometry, evalTrack,
+  fitDistance, keyframeState, keyframes, rampFoldValue, rampSpecs, stateAt,
+  type Track
 } from '../../src/content/journey';
-import { clamp01, easeInOutCubic, lerp } from '../../src/lib/math';
+import {
+  clamp01, easeInOutCubic, easeInOutQuint, lerp, smoothstep
+} from '../../src/lib/math';
 
 const focal = 1 / Math.tan((CAMERA_FOV_DEG * Math.PI) / 360);
 const at = (p: number): ReturnType<typeof stateAt> => stateAt(p, { aspect: 1.6, portrait: false });
@@ -12,6 +15,46 @@ const rampP = (stage: number, t: number): number => {
   const end = defaultGeometry.keyP[stage + 1]!;
   return start + (end - start) * t;
 };
+
+describe('evalTrack', () => {
+  const tr: Track = [[0, 0], [0.4, 10], [1, 20]];
+
+  it('clamps to the first and last keys outside the span', () => {
+    expect(evalTrack(tr, -0.5)).toBe(0);
+    expect(evalTrack(tr, 1.5)).toBe(20);
+  });
+
+  it('eases inside each segment and is continuous across keys', () => {
+    expect(evalTrack(tr, 0.2)).toBeCloseTo(lerp(0, 10, easeInOutCubic(0.5)), 9);
+    expect(evalTrack(tr, 0.7)).toBeCloseTo(lerp(10, 20, easeInOutCubic(0.5)), 9);
+    expect(evalTrack(tr, 0.4)).toBeCloseTo(10, 9);
+  });
+
+  it('accepts a custom ease and a single-key track', () => {
+    expect(evalTrack(tr, 0.2, easeInOutQuint)).toBeCloseTo(lerp(0, 10, easeInOutQuint(0.5)), 9);
+    expect(evalTrack([[0, 7]] as Track, 0.5)).toBe(7);
+    expect(evalTrack([] as unknown as Track, 0.5)).toBe(0);
+  });
+
+  it('starts and ends every ramp spec on its keyframe values', () => {
+    rampSpecs.forEach((spec, stage) => {
+      const from = keyframes[stage]!;
+      const to = keyframes[stage + 1]!;
+      for (const id of FOLD_IDS) {
+        const track = spec.folds[id];
+        if (!track) continue;
+        expect(evalTrack(track, 0)).toBeCloseTo(from.folds[id], 6);
+        expect(evalTrack(track, 1)).toBeCloseTo(to.folds[id], 6);
+      }
+      spec.ink.forEach((track, i) => {
+        const inkFrom = from.ink[i] ?? 0;
+        const inkTo = to.ink[i] ?? 0;
+        expect(evalTrack(track, 0)).toBeCloseTo(inkFrom, 6);
+        expect(evalTrack(track, 1)).toBeCloseTo(inkTo, 6);
+      });
+    });
+  });
+});
 
 describe('keyframe table', () => {
   it('holds five stages in journey order', () => {
@@ -112,30 +155,41 @@ describe('dwell drift', () => {
   });
 });
 
-describe('ramp staggering', () => {
-  it('gives a single changed fold the whole ramp', () => {
-    expect(rampFoldValue(0, 120, 0.5, 0, 1)).toBeCloseTo(60, 9);
-    const s = at(rampP(0, 0.5));
-    expect(s.folds.f1).toBeCloseTo(60, 9);
-    expect(s.folds.f2).toBe(0);
+describe('ramp choreography', () => {
+  it('scores the first crease before the paper moves, then snaps and settles', () => {
+    // Marking finishes at t 0.28 while the fold has only begun its ~0.1deg
+    // anticipation (it does not commit until t 0.40).
+    const scored = at(rampP(0, 0.3));
+    expect(scored.score.f1).toBeCloseTo(1, 9);
+    expect(Math.abs(scored.folds.f1 ?? 0)).toBeLessThan(1);
+
+    // The scored line draws on across the sheet, then lifts as the fold turns.
+    const drawing = at(rampP(0, 0.14));
+    expect(drawing.score.f1).toBeGreaterThan(0);
+    expect(drawing.score.f1).toBeLessThan(1);
+
+    // Anticipation, snap past the target, settle back onto the keyframe.
+    expect(at(rampP(0, 0.40)).folds.f1).toBeCloseTo(-4, 9);
+    expect(at(rampP(0, 0.86)).folds.f1).toBeCloseTo(122, 6);
+    expect(at(rampP(0, 1)).folds.f1).toBeCloseTo(120, 9);
   });
 
-  it('runs changed folds in id order over 55% each, staggered across 45%', () => {
-    const early = at(rampP(1, 0.2));
-    expect(early.folds.f1).not.toBe(120);
+  it('turns the corners one after another, then re-seats the hinge', () => {
+    // At t 0.30: f2 is well underway, f3 has just begun, f4 has not started,
+    // and the hinge is still seated at 120.
+    const early = at(rampP(1, 0.3));
     expect(early.folds.f2).toBeGreaterThan(0);
-    expect(early.folds.f3).toBe(0);
-    expect(early.folds.f4).toBe(0);
+    expect(early.folds.f3).toBeGreaterThan(0);
+    expect(early.folds.f4).toBeCloseTo(0, 9);
+    expect(early.folds.f1).toBeCloseTo(120, 9);
 
-    const mid = at(rampP(1, 0.35));
-    const progress = (id: 'f1' | 'f2' | 'f3' | 'f4'): number => {
-      const from = keyframes[1]!.folds[id];
-      const to = keyframes[2]!.folds[id];
-      return Math.abs((mid.folds[id]! - from) / (to - from));
-    };
-    expect(progress('f1')).toBeGreaterThan(progress('f2'));
-    expect(progress('f2')).toBeGreaterThan(progress('f3'));
-    expect(progress('f3')).toBeGreaterThanOrEqual(progress('f4'));
+    // By t 0.9 the corners are seated and the hinge is easing to 105.
+    const late = at(rampP(1, 0.9));
+    expect(late.folds.f2).toBeCloseTo(150, 6);
+    expect(late.folds.f3).toBeCloseTo(150, 6);
+    expect(late.folds.f4).toBeCloseTo(-90, 6);
+    expect(late.folds.f1).toBeLessThan(120);
+    expect(late.folds.f1).toBeGreaterThan(105);
   });
 
   it('starts and ends every ramp exactly on its keyframes', () => {
@@ -149,9 +203,9 @@ describe('ramp staggering', () => {
     }
   });
 
-  it('eases each fold with easeInOutCubic', () => {
-    const t = 0.27;
-    const expected = lerp(0, 120, easeInOutCubic(t));
+  it('eases the first fold with easeInOutQuint across its move', () => {
+    const t = 0.6;
+    const expected = lerp(-4, 122, easeInOutQuint((t - 0.4) / 0.46));
     expect(at(rampP(0, t)).folds.f1).toBeCloseTo(expected, 9);
   });
 
@@ -165,20 +219,25 @@ describe('ramp staggering', () => {
 });
 
 describe('ink and camera across ramps', () => {
-  it('interpolates ink over the whole ramp, not the fold stagger', () => {
+  it('keeps the settled ink levels while the next layer draws on', () => {
     const s = at(rampP(1, 0.5));
     expect(s.ink[0]).toBeCloseTo(1, 9);
-    expect(s.ink[1]).toBeCloseTo(0.5, 9);
+    // Type ink is mid-draw at t 0.5: track [0.28 -> 0.86] with easeInOutCubic.
+    expect(s.ink[1]).toBeCloseTo(easeInOutCubic((0.5 - 0.28) / 0.58), 9);
     expect(s.ink[2]).toBeCloseTo(0, 9);
   });
 
-  it('interpolates camera and offset over the whole ramp', () => {
+  it('rotates the camera early, then drops elevation and distance on beats', () => {
     const s = at(rampP(0, 0.5));
-    expect(s.camera.az).toBeCloseTo(lerp(-28, 18, 0.5), 9);
-    expect(s.camera.el).toBeCloseTo(lerp(34, 42, 0.5), 9);
+    // Azimuth has fully taken its shortest arc by t 0.34.
+    expect(s.camera.az).toBeCloseTo(shortestAz(-28, 18), 9);
+    // Elevation is mid-beat at 0.35 of the blend.
+    expect(s.camera.el).toBeCloseTo(lerp(34, 42, 0.35), 9);
+    // Distance is mid-beat: its track blends 0.55 -> 1 over t 0.45..1.
     const [d0, d1] = [keyframes[0]!.camera.dist, keyframes[1]!.camera.dist] as [number, number];
-    expect(s.camera.dist).toBeCloseTo(lerp(d0, d1, 0.5), 9);
-    expect(s.camera.centreX).toBeCloseTo(lerp(0.7, 0.3, 0.5), 9);
+    const distMix = lerp(0.55, 1, easeInOutCubic((0.5 - 0.45) / 0.55));
+    expect(s.camera.dist).toBeCloseTo(lerp(d0, d1, distMix), 6);
+    expect(s.camera.centreX).toBeCloseTo(lerp(0.7, 0.3, easeInOutCubic(0.5 / 0.6)), 6);
   });
 
   it('takes the shortest azimuth arc and never leaves the keyframe span', () => {
@@ -190,13 +249,37 @@ describe('ink and camera across ramps', () => {
   });
 });
 
+function shortestAz(from: number, to: number): number {
+  let d = (to - from) % 360;
+  if (d > 180) d -= 360;
+  if (d < -180) d += 360;
+  return from + d;
+}
+
 describe('Launch handoff', () => {
-  it('fades ink only over the last 30% of the unfold', () => {
-    expect(at(rampP(3, 0.5)).ink).toEqual([1, 1, 1]);
-    expect(at(rampP(3, 0.7)).launchInkFade).toBeCloseTo(0, 9);
+  it('holds the sheet fully inked early in the unfold', () => {
+    expect(at(rampP(3, 0.02)).ink).toEqual([1, 1, 1]);
+  });
+
+  it('dissolves ink interface -> type -> structure across the beats', () => {
+    // At t 0.5 the interface layer is gone, the type layer is mid-dissolve and
+    // the structure layer is still fully printed.
+    const mid = at(rampP(3, 0.5));
+    expect(mid.ink[0]).toBeCloseTo(1, 9);
+    expect(mid.ink[1]).toBeCloseTo(1 - easeInOutCubic(0.625), 9);
+    expect(mid.ink[2]).toBeCloseTo(0, 9);
+  });
+
+  it('gates the fibre normal with a smoothstep handoff over 60%..86%', () => {
+    expect(at(rampP(3, 0.5)).launchInkFade).toBeCloseTo(0, 9);
+    const t = 0.7;
+    expect(at(rampP(3, t)).launchInkFade).toBeCloseTo(smoothstep(0.60, 0.86, t), 9);
     const late = at(rampP(3, 0.85));
-    expect(late.launchInkFade).toBeCloseTo(0.5, 6);
-    for (const level of late.ink) expect(level).toBeCloseTo(0.5, 6);
+    expect(late.launchInkFade).toBeCloseTo(smoothstep(0.60, 0.86, 0.85), 9);
+    // By t 0.85 every layer has dissolved before the camera covers.
+    expect(late.ink[0]).toBeLessThan(0.01);
+    expect(late.ink[1]).toBeCloseTo(0, 9);
+    expect(late.ink[2]).toBeCloseTo(0, 9);
   });
 
   it('ramps launchT across the whole unfold and pins it at 1 on the keyframe', () => {
