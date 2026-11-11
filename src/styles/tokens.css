@@ -16,6 +16,7 @@
   --mono: "Azeret Mono", "Azeret Mono Fallback", monospace;
   color-scheme: light;
 }
+
 @media (max-width: 767px) {
   :root { --nav-h: 6.5rem; }
 }
